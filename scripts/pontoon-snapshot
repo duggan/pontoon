@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+
+"""Usage:
+          pontoon snapshot list [--help]
+          pontoon snapshot show <name>
+          pontoon snapshot destroy <name>
+          pontoon snapshot transfer <name> <region>
+
+Options:
+    -h --help       Show this page.
+"""
+
+from pontoon import ui
+from pontoon import Command
+from pontoon import SnapshotException
+
+
+class SnapshotCommand(Command):
+
+    def list(self):
+        available = self.pontoon.snapshot.list()
+        ui.message("Available snapshots:")
+        for s in available:
+            ui.message(" - %s" % s.name)
+        return 0
+
+    def show(self):
+        img = self.pontoon.snapshot.show(self.args['<name>'])
+        for k, v in img.__dict__.iteritems():
+            ui.message("   %s: %s" % (k, v))
+
+    def destroy(self):
+        ui.message("Destroying %s..." % self.args['<name>'])
+        self.pontoon.snapshot.destroy(self.args['<name>'])
+
+    def transfer(self):
+        ui.message("Transferring %s to %s..." % (
+            self.args['<name>'],
+            self.args['<region>']
+        ))
+        self.pontoon.snapshot.transfer(self.args['<name>'],
+                                       self.args['<region>'])
+        return 0
+
+
+if __name__ == '__main__':
+
+    try:
+        cmd = SnapshotCommand(str(__doc__))
+        exit(cmd.run())
+    except SnapshotException as e:
+        ui.message(str(e))
+        exit(1)
+
+    exit(0)

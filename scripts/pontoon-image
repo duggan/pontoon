@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+
+"""Usage:
+          pontoon image list
+          pontoon image oses
+          pontoon image show <name>
+
+Options:
+    -h --help       Show this page.
+"""
+
+from pontoon import ui
+from pontoon import Command
+from pontoon import ImageException
+
+
+class ImageCommand(Command):
+
+    def list(self):
+        available = self.pontoon.image.list()
+        ui.message("Available images:")
+        for s in available:
+            ui.message(" - %s" % s.name)
+        return 0
+
+    def show(self):
+        img = self.pontoon.image.show(self.args['<name>'])
+        for k, v in img.__dict__.items():
+            ui.message("   %s: %s" % (k, v))
+
+    def oses(self):
+        available = self.pontoon.image.oses()
+        ui.message("Available Operating Systems:")
+        for o in available:
+            ui.message(" - %s" % o)
+        return 0
+
+
+if __name__ == '__main__':
+
+    try:
+        cmd = ImageCommand(str(__doc__))
+        exit(cmd.run())
+    except ImageException as e:
+        ui.message(str(e))
+        exit(1)
+
+    exit(0)

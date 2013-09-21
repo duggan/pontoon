@@ -1,0 +1,7 @@
+.cache
+.coverage
+docs/_build
+*.pyc
+*.swp
+*.bak
+pontoon.egg-info
