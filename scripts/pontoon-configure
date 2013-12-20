@@ -92,7 +92,7 @@ class ConfigureCommand(Command):
 
             configure.register_key(config,
                                    config['auth_key_name'],
-                                   config['ssh_public_key'])
+                                   public_key)
             ui.message("ok!")
         else:
             ui.message("Already registered, moving on...")
@@ -106,13 +106,14 @@ class ConfigureCommand(Command):
                 option_choices[option_index] = o.name
                 ui.message(" %-3s %s" % (str(option_index) + '.', o.name))
                 option_index += 1
-            selection = ui.ask("%s (1-%d)" % (option.title(), len(option_choices)))
+            selection = ui.ask("%s (1-%d)" % (option.title(),
+                                              len(option_choices)))
             selection = int(selection) if selection.isdigit() else 0
             while selection not in option_choices.keys():
-                selection = ui.ask("Invalid selection. Choose 1-%d" % len(option_choices))
+                selection = ui.ask("Invalid selection. Choose 1-%d" % (
+                    len(option_choices)))
                 selection = int(selection) if selection.isdigit() else 0
             config[option] = str(option_choices[selection])
-
 
         other = {}
         for k, v in configure.defaults.items():

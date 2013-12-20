@@ -4,16 +4,18 @@ python:
   - 2.7
   - 3.2
   - 3.3
-  - "pypy"
+  - pypy
+env:
+  - MOCK=1
 before_install:
-  - sudo add-apt-repository ppa:duggan/bats --yes
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq bats
+#  - sudo add-apt-repository ppa:duggan/bats --yes
+#  - sudo apt-get update -qq
+#  - sudo apt-get install -qq bats
 install:
   - pip install -r requirements.txt --use-mirrors
   - pip install coveralls --use-mirrors
 script:
-  - bats --tap test/bats
+#  - bats --tap test/bats
   - py.test --pep8 pontoon
   - py.test --cov=pontoon
   - coverage report -m

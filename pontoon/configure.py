@@ -132,6 +132,7 @@ def regions(credentials):
     except PontoonException as e:
         raise ConfigureException(str(e))
 
+
 @debug
 def read_key(path):
     """Read a public SSH key from the filesystem"""
