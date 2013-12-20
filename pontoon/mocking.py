@@ -164,11 +164,6 @@ mocked = {
 }
 
 
-def _respond_denied(target, method='GET', params={}):
-    """Fake 403 denied response from Digital Ocean"""
-    raise ClientException("Mock Access Denied")
-
-
 def _respond(target, method='GET', params={}):
     """Fake out responses from Digital Ocean."""
 

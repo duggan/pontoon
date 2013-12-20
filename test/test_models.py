@@ -28,8 +28,7 @@ from pontoon.pontoon import Struct
 from pontoon import ui
 from pontoon import configure
 from pontoon.mocking import (_raise, capture_stdout, event_response,
-                             get_builtins, _respond, _respond_denied,
-                             mocked)
+                             get_builtins, _respond, mocked)
 
 
 _request = MagicMock(name='request')
@@ -84,10 +83,6 @@ class TestDroplet(object):
         _request.side_effect = _respond
         for server in self.droplet.list():
             assert isinstance(server, Struct)
-
-        _request.side_effect = _respond_denied
-        with raises(DropletException):
-            self.droplet.list()
 
     def test_id_from_name(self):
         _request.side_effect = _respond
@@ -571,9 +566,6 @@ class TestConfigure:
             'api_key': 'bar',
             'auth_key': '~/.ssh/foo',
             'auth_key_name': 'foo',
-            'size': '512MB',
-            'image': 'Ubuntu 12.04 x64',
-            'region': 'Amsterdam 1',
             'username': 'root',
             'scrub_data': True,
 

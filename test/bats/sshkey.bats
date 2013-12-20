@@ -9,7 +9,7 @@ export MOCK=1
 }
 
 @test "Add SSH key" {
-	run pontoon sshkey add foo `mktemp -t pontoontest`
+	run pontoon sshkey add foo `mktemp -t pontoontest.XXXXX`
 	[ "$status" = 0 ]
 }
 
@@ -24,12 +24,12 @@ export MOCK=1
 }
 
 @test "Replace an existing key" {
-	run pontoon sshkey replace foobarbaz `mktemp -t pontoontest`
+	run pontoon sshkey replace foobarbaz `mktemp -t pontoontest.XXXXX`
 	[ "$status" = 0 ]
 }
 
 @test "Fail to replace a non-existant key" {
-	run pontoon sskey replace foo `mktemp -t pontoontest`
+	run pontoon sskey replace foo `mktemp -t pontoontest.XXXXX`
 	[ "$status" = 1 ]
 }
 
