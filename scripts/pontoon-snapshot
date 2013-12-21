@@ -26,7 +26,7 @@ class SnapshotCommand(Command):
 
     def show(self):
         img = self.pontoon.snapshot.show(self.args['<name>'])
-        for k, v in img.__dict__.iteritems():
+        for k, v in img.__dict__.items():
             ui.message("   %s: %s" % (k, v))
 
     def destroy(self):

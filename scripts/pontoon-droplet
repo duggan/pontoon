@@ -288,9 +288,11 @@ if __name__ == '__main__':
         config = configure.combined()
         cmd = DropletCommand(
             str(__doc__.format(
-                size=config['size'],
-                image=config['image'], region=config['region'],
-                keys=config['auth_key_name'], scrub=config['scrub_data'])))
+                size=config.get('size', None),
+                image=config.get('image', None),
+                region=config.get('region', None),
+                keys=config.get('auth_key_name', None),
+                scrub=config.get('scrub_data', None))))
         exit(cmd.run())
     except PontoonException as e:
         ui.message(str(e))

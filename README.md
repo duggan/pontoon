@@ -2,6 +2,9 @@
 
 A Python CLI (and library) for [Digital Ocean](https://digitalocean.com).
 
+[![Coverage Status](https://coveralls.io/repos/duggan/pontoon/badge.png?branch=master)](https://coveralls.io/r/duggan/pontoon?branch=master)
+[![Build Status](https://travis-ci.org/duggan/pontoon.png)](https://travis-ci.org/duggan/pontoon)
+
 ## Introduction
 
 Pontoon makes interacting with Digital Ocean on the command line smooth sailing.
