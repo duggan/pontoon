@@ -21,6 +21,7 @@ export MOCK=1
 
 @test "Create a Droplet" {
 	run pontoon droplet create something-different \
+	--size="512MB" \
 	--image="Foobuntu 12.04 x64" \
 	--region="Bardam 1" \
 	--no-wait # we should test the 'wait' variant too
