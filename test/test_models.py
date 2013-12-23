@@ -17,10 +17,11 @@ test_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, lib_dir)
 
 from docopt import DocoptExit
-from pontoon import (PontoonException, APIException, DropletException,
+from pontoon import (PontoonException, DropletException,
                      SnapshotException, ConfigureException,
-                     SSHKeyException, ImageException, RegionException,
-                     SizeException, EventException)
+                     SSHKeyException, ImageException,
+                     RegionException, SizeException,
+                     EventException)
 from pontoon import Pontoon
 from pontoon import Command
 from pontoon import ClientException
