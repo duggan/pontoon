@@ -9,10 +9,9 @@ from . import debug
 from .pontoon import Pontoon
 from .exceptions import SSHKeyException, ConfigureException
 
-cfg = '.pontoon'
-sys_dir = '/etc/pontoon'
-user_home = os.path.expanduser('~')
-current_dir = os.getcwd()
+user_cfg = os.path.join(os.path.expanduser('~'), '.pontoon')
+sys_cfg = '/etc/pontoon.conf'
+local_cfg = os.path.join(os.getcwd(), '.pontoon')
 debug_mode = True if os.environ.get("DEBUG") else False
 mock_mode = True if os.environ.get("MOCK") else False
 logformat = '%(asctime)s [%(name)s:%(levelname)s] %(message)s'
@@ -152,11 +151,11 @@ def create_config(data):
     import yaml
     data = yaml.dump(data, default_flow_style=False)
     if getuid() == 0:  # root
-        loc = sys_dir
+        loc = sys_cfg
     else:
-        loc = user_home
+        loc = user_cfg
 
-    with open(os.path.join(loc, cfg), 'w') as f:
+    with open(loc, 'w') as f:
         f.write(data.encode('UTF-8'))
 
 
@@ -165,9 +164,9 @@ def read_config():
     """Read a YAML formatted config into a dictionary"""
     import yaml
     config = config_format
-    for loc in current_dir, user_home, sys_dir:
+    for loc in local_cfg, user_cfg, sys_cfg:
         try:
-            with open("%s/%s" % (loc, cfg)) as source:
+            with open(loc) as source:
                 raw_config = source.read()
                 if raw_config:
                     config = yaml.load(raw_config)
