@@ -9,10 +9,6 @@ class ClientException(PontoonException):
     """An error occurred during the API request"""
 
 
-class APIException(PontoonException):
-    """An error occurred while processing the API request"""
-
-
 class SnapshotException(PontoonException):
     """An error occurred while processing the snapshot"""
 
