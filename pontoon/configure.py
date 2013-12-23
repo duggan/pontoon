@@ -50,8 +50,10 @@ def logger():
 def ssh_tools():
     """Checks for existance of SSH tools required for creating keys."""
     try:
-        ssh_keygen = Popen(['command', '-v', 'ssh-keygen'], stdout=PIPE)
-        openssl = Popen(['command', '-v', 'openssl'], stdout=PIPE)
+        ssh_keygen = Popen(['command', '-v', 'ssh-keygen'],
+                           stdout=PIPE, shell=True)
+        openssl = Popen(['command', '-v', 'openssl'],
+                        stdout=PIPE, shell=True)
         if ssh_keygen and openssl:
             return True
     except CalledProcessError:
