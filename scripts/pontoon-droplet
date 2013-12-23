@@ -276,7 +276,8 @@ class DropletCommand(Command):
         elif self.args['--disable']:
             action = 'disable'
         else:
-            return ui.message("action must be either 'enable' or 'disable'")
+            ui.message("action must be either 'enable' or 'disable'")
+            return 1
 
         ui.message("%s backups for %s..." % (action, self.args['<name>']))
         self.pontoon.droplet.backups(action, self.args['<name>'])

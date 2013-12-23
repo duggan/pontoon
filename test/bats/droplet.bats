@@ -145,3 +145,8 @@ export MOCK=1
 	run pontoon droplet backups foo --disable
 	[ "$status" = 0 ]
 }
+
+@test "Should be a single error message when incorrect arguments used" {
+	run pontoon droplet backups foo
+	[ "$output" = "action must be either 'enable' or 'disable'" ]
+}
