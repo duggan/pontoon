@@ -3,8 +3,9 @@
 """Pontoon. A Python CLI for Digital Ocean.
 
 Usage:
-    pontoon [--version] [--help]
-            <command> [<args>...]
+    pontoon <command> [<args>...]
+    [--version]
+    [--help]
 
 The top level pontoon commands are:
     configure   Interactive configuration for pontoon
