@@ -539,7 +539,7 @@ class TestConfigure:
         _Popen.side_effect = ["/usr/bin/ssh-keygen", "/usr/bin/openssl"]
         assert configure.ssh_tools() is True
 
-        _Popen.side_effect = lambda cmd, stdout: (
+        _Popen.side_effect = lambda *args, **kwargs: (
             _raise(CalledProcessError("foo", "bar")))
         assert configure.ssh_tools() is False
 
