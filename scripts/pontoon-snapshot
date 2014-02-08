@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
 """Usage:
-          pontoon snapshot list [--help]
+          pontoon snapshot list [--with-ids]
           pontoon snapshot show <name>
           pontoon snapshot destroy <name>
           pontoon snapshot transfer <name> <region>
 
 Options:
+    --with-ids      Include ids in output. Useful for other software that uses
+                    Digital Ocean ids for input (like Packer).
     -h --help       Show this page.
 """
 
@@ -21,7 +23,10 @@ class SnapshotCommand(Command):
         available = self.pontoon.snapshot.list()
         ui.message("Available snapshots:")
         for s in available:
-            ui.message(" - %s" % s.name)
+            if self.args['--with-ids']:
+                ui.message(" - %-10s %s" % (str(s.id) + ':', s.name))
+            else:
+                ui.message(" - %s" % s.name)
         return 0
 
     def show(self):
