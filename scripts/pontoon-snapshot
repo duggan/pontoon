@@ -22,6 +22,11 @@ class SnapshotCommand(Command):
     def list(self):
         available = self.pontoon.snapshot.list()
         ui.message("Available snapshots:")
+        if len(set(s.name for s in available)) != len(available):
+            ui.warning("Warning: multiple snapshots have the same name! "
+                       "Actions on these snapshots will fail until this is "
+                       "resolved in the web UI.")
+
         for s in available:
             if self.args['--with-ids']:
                 ui.message(" - %-10s %s" % (str(s.id) + ':', s.name))

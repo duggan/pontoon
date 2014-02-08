@@ -12,7 +12,12 @@ class Snapshot:
         self.render = render
         self.region = Region(self.render)
 
-    @cache
+    def __unique__(self, name):
+        entries = self.list()
+        if len(set(i.name for i in entries)) != len(entries):
+            return False
+        return True
+
     @debug
     def list(self):
         """List snapshots"""
@@ -40,16 +45,20 @@ class Snapshot:
     @debug
     def id_from_name(self, name):
         """Translate snapshot name into ID"""
-        matches = [s.id for s in self.list() if s.name.lower() == name.lower()]
-        if len(matches) == 0:
-            raise SnapshotException('No snapshot named "%s" found' % name)
-        elif len(matches) == 1:
-            return matches[0]
-        else:
-            raise SnapshotException('More than one match for "%s"' % name)
+        if not self.__unique__(name):
+            raise SnapshotException("More than one snapshot matches %s" % name)
+        res = next((
+            r.id for r in self.list() if r.name.lower() == name.lower()),
+            None)
+        if res:
+            return res
+        raise SnapshotException('No snapshot called %s' % name)
 
     @debug
     def destroy(self, name):
         """Destroy snapshot"""
-        id = self.id_from_name(name)
-        return self.render('event', '/images/%s/destroy' % id)
+        try:
+            id = self.id_from_name(name)
+            return self.render('status', '/images/%s/destroy' % id)
+        except ClientException as e:
+            raise SnapshotException(str(e))

@@ -269,7 +269,7 @@ def _respond(target, method='GET', params={}):
             '/images/(\d+)': lambda x: {'image': next(
                 (d for d in (mocked.get('images') +
                              mocked.get('snapshots')) if d['id'] == x), None)},
-            '/images/\d+/destroy': {'event': event_response()},
+            '/images/\d+/destroy': {'status': 'OK'},
             '/events/(\d+)': lambda x: {'event': next(
                 (d for d in mocked.get('events') if d['id'] == x), None)},
             '/ssh_keys/(\d+)': lambda x: {'ssh_key': next(

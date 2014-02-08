@@ -26,7 +26,7 @@ export MOCK=1
 @test "Fail to destroy non-existant snapshot" {
 	run pontoon snapshot destroy "snapshot-bar"
 	[ "$status" = 1 ]
-	[ "${lines[1]}" = 'No snapshot named "snapshot-bar" found' ]
+	[ "${lines[1]}" = 'No snapshot called snapshot-bar' ]
 }
 
 @test "Transfer a snapshot" {

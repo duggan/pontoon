@@ -87,7 +87,7 @@ class Pontoon:
             return [Struct(**r) for r in content]
         elif type(content).__name__ == 'dict':
             return Struct(**content)
-        elif type(content).__name__ in ['str', 'int']:
+        elif type(content).__name__ in ['str', 'int', 'unicode']:
             return content
         raise ClientException("Malformed response: %s" % content)
 

@@ -99,6 +99,7 @@ class TestDroplet(object):
         })
         with raises(DropletException):
             self.droplet.id_from_name('baz')
+        mocked['droplets'].pop()
 
     def test_name_from_id(self):
         _request.side_effect = _respond
@@ -293,11 +294,6 @@ class TestImage(object):
 class TestSnapshot(object):
 
     snapshot = Pontoon('foo', 'bar').snapshot
-    snapshot_list = MagicMock('snapshot_list')
-    some_snapshot = Data()
-    some_snapshot.id = 2
-    some_snapshot.name = 'snapshot-bar'
-    snapshot_list.return_value = [some_snapshot, some_snapshot]
 
     def test_list(self):
         for snap in self.snapshot.list():
@@ -309,17 +305,22 @@ class TestSnapshot(object):
 
     def test_id_from_name(self):
         assert 1024 == self.snapshot.id_from_name('snapshot-foo')
+
         with raises(SnapshotException):
             foo = self.snapshot.id_from_name('not-a-snapshot')
 
-    @patch('pontoon.snapshot.Snapshot.list', snapshot_list)
-    def test_id_from_name_two(self):
+        mocked['snapshots'].append({
+            'id': 8192,
+            'name': 'snapshot-foo',
+            'distribution': 'Foobuntu'
+        })
         with raises(SnapshotException):
             foo = self.snapshot.id_from_name('snapshot-bar')
+        mocked['snapshots'].pop()
 
     def test_destroy(self):
         e = self.snapshot.destroy('snapshot-foo')
-        assert e.status == 'OK'
+        assert e == 'OK'
         with raises(SnapshotException):
             foo = self.snapshot.destroy('not-a-snapshot')
 

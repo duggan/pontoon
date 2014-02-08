@@ -20,6 +20,12 @@ class Droplet:
         self.image = Image(self.render)
         self.sshkey = SSHKey(self.render)
 
+    def __unique__(self, name):
+        entries = self.list()
+        if len(set(i.name for i in entries)) != len(entries):
+            return False
+        return True
+
     @debug
     def list(self):
         """Return a list of Droplets."""
@@ -31,14 +37,14 @@ class Droplet:
     @debug
     def id_from_name(self, name):
         """Tranlate a hostname into its Droplet ID."""
-        matches = [d.id for d in self.list() if d.name == name]
-        if len(matches) == 0:
-            raise DropletException('No Droplet found')
-        elif len(matches) == 1:
-            return matches[0]
-        else:
-            raise DropletException('More than one Droplet matches "%s"' % (
-                                   name))
+        if not self.__unique__(name):
+            raise DropletException("More than one Droplet matches %s" % name)
+        res = next((
+            r.id for r in self.list() if r.name.lower() == name.lower()),
+            None)
+        if res:
+            return res
+        raise DropletException('No Droplet found')
 
     @debug
     def name_from_id(self, id):
