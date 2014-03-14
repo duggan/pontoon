@@ -47,7 +47,7 @@ Set up your credentials and preferences:
 $ pontoon configure
 ```
 
-You'll be prompted for your Digital Ocean API credentials ([available here](https://www.digitalocean.com/api_access)), and whether you want to use existing SSH credentials or for them to be generated (using OpenSSH).
+You'll be prompted for your Digital Ocean API credentials ([available here](https://cloud.digitalocean.com/api_access)), and whether you want to use existing SSH credentials or for them to be generated (using OpenSSH).
 
 The rest are preferences, and can be set at any time by running configure again, editing the `~/.pontoon` config file (YAML format), or by specifying them with options on the command line.
 
