@@ -123,7 +123,7 @@ class Pontoon:
             raise ClientException('Empty json!')
         elif response.status_code == 401:
             raise ClientException('Access Denied')
-        elif response.status_Code == 404:
+        elif response.status_code == 404:
             raise ClientException('Not Found')
 
         raise ClientException(('Status code: %d, full response: %s' %
