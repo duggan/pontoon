@@ -150,3 +150,13 @@ export MOCK=1
 	run pontoon droplet backups foo
 	[ "$output" = "action must be either 'enable' or 'disable'" ]
 }
+
+@test "'field' command expects 'field-name' argument" {
+	run pontoon droplet field dev
+	[ "$status" = 1 ]
+}
+
+@test "Provide output of a single field of a droplet's info" {
+	run pontoon droplet field foo ip_address
+	[ "$status" = 0 ]
+}
