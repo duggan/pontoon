@@ -52,9 +52,9 @@ Quick guide:
                                         configured account and SSH key.
         pontoon droplet destroy foo     Terminate a droplet and secure
                                         erase the underlying drive.
-        pontoon droplet field foo ip_address Output only the value of a specific
-                                        field of the droplet. Useful use in
-                                        scripting.
+        pontoon droplet field foo ip_address Output only the value of a
+                                        specific field of the droplet. Useful
+                                        use in scripting.
 """
 
 import re
