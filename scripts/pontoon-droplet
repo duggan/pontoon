@@ -22,6 +22,7 @@
           pontoon droplet poweroff <name> [--yes]
           pontoon droplet passwordreset <name> [--yes]
           pontoon droplet backups <name> [ --enable | --disable ]
+          pontoon droplet field <name> <field-name>
 
 Options:
     -h --help              Show this page.
@@ -51,6 +52,9 @@ Quick guide:
                                         configured account and SSH key.
         pontoon droplet destroy foo     Terminate a droplet and secure
                                         erase the underlying drive.
+        pontoon droplet field foo ip_address Output only the value of a
+                                        specific field of the droplet. Useful
+                                        use in scripting.
 """
 
 import re
@@ -281,6 +285,14 @@ class DropletCommand(Command):
 
         ui.message("%s backups for %s..." % (action, self.args['<name>']))
         self.pontoon.droplet.backups(action, self.args['<name>'])
+
+    def field(self):
+        if '<field-name>' not in self.args:
+            ui.message('Parameter "field-name" must be given')
+            return 1
+        machine = self.pontoon.droplet.show(self.args['<name>'])
+        info = ui.format_droplet_info(machine)
+        ui.message("%s" % info[self.args['<field-name>']])
 
 
 if __name__ == '__main__':

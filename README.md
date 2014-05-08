@@ -147,6 +147,20 @@ $ py.test --pep8 --cov pontoon
 $ bats test/bats
 ```
 
+But while this way of running tests is best for developing, it's advised though
+before submitting a pull request, to run the tests as Travis would to, which is:
+
+```
+$ bats test/bats
+$ py.test --pep8 pontoon
+$ py.test --cov=pontoon
+$ coverage report -m
+```
+
+Please note, that the bats tests also check pep8-compliance of the CLI commands
+with `pep8 scripts/pontoon*`. So whenever bats complains about "PEP8 tests for
+interface code", then check the just mentioned command.
+
 ### Debugging
 
 Set the `DEBUG` environment variable (to anything) to enable debug output for pontoon.

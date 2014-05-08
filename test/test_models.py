@@ -466,7 +466,7 @@ class TestUI:
         assert ui.mask('tiny') == '****'
         assert ui.mask('somewhatlonger') == '***********ger'
         assert (ui.mask('reallylongperhapsabighashorsomethinglikethat') ==
-               ('***********************************glikethat'))
+                ('***********************************glikethat'))
 
     def test_format_droplet_info(self):
         pontoon = Pontoon('foo', 'bar')
