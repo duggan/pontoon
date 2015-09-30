@@ -5,3 +5,5 @@ docs/_build
 *.swp
 *.bak
 pontoon.egg-info
+build/
+dist/
