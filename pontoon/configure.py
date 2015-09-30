@@ -4,7 +4,12 @@ import os
 import logging
 import sys
 from os.path import expanduser
-from os import getuid
+
+try:
+    from os import getuid
+except ImportError:
+    pass
+
 from subprocess import call, Popen, PIPE, CalledProcessError
 from . import debug
 from .pontoon import Pontoon
