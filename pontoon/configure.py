@@ -2,15 +2,26 @@
 
 import os
 import logging
+import sys
 from os.path import expanduser
-from os import getuid
+
+try:
+    from os import getuid
+except ImportError:
+    getuid = None
+
 from subprocess import call, Popen, PIPE, CalledProcessError
 from . import debug
 from .pontoon import Pontoon
 from .exceptions import SSHKeyException, ConfigureException
 
 user_cfg = os.path.join(os.path.expanduser('~'), '.pontoon')
-sys_cfg = '/etc/pontoon.conf'
+
+if sys.platform != "win32":
+    sys_cfg = '/etc/pontoon.conf'
+else:
+    sys_cfg = ""
+
 local_cfg = os.path.join(os.getcwd(), '.pontoon')
 debug_mode = True if os.environ.get("DEBUG") else False
 mock_mode = True if os.environ.get("MOCK") else False
@@ -150,8 +161,12 @@ def create_config(data):
     """Create a YAML config file from a dictionary"""
     import yaml
     data = yaml.dump(data, default_flow_style=False)
-    if getuid() == 0:  # root
-        loc = sys_cfg
+
+    if sys.platform != "win32":
+        if getuid() == 0:  # root
+            loc = sys_cfg
+        else:
+            loc = user_cfg
     else:
         loc = user_cfg
 
@@ -164,7 +179,9 @@ def read_config():
     """Read a YAML formatted config into a dictionary"""
     import yaml
     config = config_format
-    for loc in local_cfg, user_cfg, sys_cfg:
+
+    # sys_cfg empty in windows, but shouldnt affect this
+    for loc in [local_cfg, user_cfg, sys_cfg]:
         try:
             with open(loc) as source:
                 raw_config = source.read()
