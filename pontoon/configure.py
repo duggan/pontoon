@@ -8,7 +8,7 @@ from os.path import expanduser
 try:
     from os import getuid
 except ImportError:
-    pass
+    getuid = None
 
 from subprocess import call, Popen, PIPE, CalledProcessError
 from . import debug
