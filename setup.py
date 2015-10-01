@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from pontoon import (__version__, __description__, __author__,
-                     __author_email__, __url__)
+from pontoon.meta import (__version__, __description__, __author__,
+                          __author_email__, __url__)
 from glob import glob
 try:
     from setuptools import setup
@@ -12,9 +12,7 @@ packages = [
     'pontoon',
 ]
 
-requires = ["docopt >= 0.6.0",
-            "PyYAML",
-            "requests"]
+requires = open("requirements/base.txt").read().split()
 
 scripts = glob('scripts/pontoon*')
 

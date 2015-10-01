@@ -1,1 +1,1 @@
-include docs/README.rst LICENSE requirements.txt
+include docs/README.rst LICENSE requirements/*

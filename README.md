@@ -33,6 +33,12 @@ Install via pip:
 $ pip install pontoon
 ```
 
+To install the latest (development, unstable) release:
+
+```
+$ pip install https://github.com/duggan/pontoon/archive/master.zip
+```
+
 If you'd like to package pontoon for your favourite OS, feel free to do so (and please send a PR to this README!)
 
 More options are on the way.
@@ -114,17 +120,24 @@ The library component owes its genesis to [DOP](https://github.com/ahmontero/dop
 
 ## Contributing
 
-Pull requests for bugs are always welcome! New functionality should generally be preceded by a discussion, though if you've written something that you needed and want to contribute back, a pull request is a fine way to start that discussion :)
+Pull requests for bugs are always welcome! New functionality should generally be preceded by a discussion, though if you've written something that you needed and want to contribute back, a pull request is a fine way to start that discussion :tada:
 
 All of the code in pontoon is [PEP-8](http://www.python.org/dev/peps/pep-0008/) audited (using [pytest-pep8](https://pypi.python.org/pypi/pytest-pep8)), and there's a full suite of tests written for [py.test](http://pytest.org/) (library code) and [Bats](https://github.com/sstephenson/bats) (interface). Contributions should, therefore, include tests and pass a PEP-8 audit.
 
 ### Running the tests
 
-Running the tests locally requires the contents of `requirements.txt` as well as bats.
+Tests are run via [Tox](https://tox.readthedocs.org).
+
+For example, to test the library, CLI and coverage for Python 2.7, run:
 
 ```
-$ pip install -r requirements.txt
+$ pip install tox
+$ tox -e py27,lib,cli,coverage
 ```
+
+The `.travis.yml` file in this repository enumerates all the tests that are performed.
+
+The CLI tests require [BATS](https://github.com/sstephenson/bats), and PEP8 checks are performed in both the `lib` tests and `cli` tests.
 
 On OSX, bats can be installed with homebrew:
 
@@ -139,27 +152,6 @@ $ add-apt-repository ppa:duggan/bats
 $ apt-get update
 $ apt-get install bats
 ```
-
-Tests can then be run from the root directory:
-
-```
-$ py.test --pep8 --cov pontoon
-$ bats test/bats
-```
-
-But while this way of running tests is best for developing, it's advised though
-before submitting a pull request, to run the tests as Travis would to, which is:
-
-```
-$ bats test/bats
-$ py.test --pep8 pontoon
-$ py.test --cov=pontoon
-$ coverage report -m
-```
-
-Please note, that the bats tests also check pep8-compliance of the CLI commands
-with `pep8 scripts/pontoon*`. So whenever bats complains about "PEP8 tests for
-interface code", then check the just mentioned command.
 
 ### Debugging
 

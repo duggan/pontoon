@@ -23,13 +23,13 @@ See 'pontoon help <command>' for more information on a specific command.
 
 from subprocess import call
 from docopt import docopt
-from pontoon import __version__ as version
+from pontoon.meta import __version__
 from pontoon import ui
 
 
 def main():
     args = docopt(__doc__,
-                  version=version,
+                  version=__version__,
                   options_first=True)
 
     argv = [args['<command>']] + args['<args>']
