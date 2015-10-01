@@ -7,3 +7,4 @@ docs/_build
 pontoon.egg-info
 build/
 dist/
+.tox/
