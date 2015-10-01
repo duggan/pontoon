@@ -2,8 +2,3 @@ PyYAML
 docopt
 requests
 mock
-pytest
-pytest-cov
-pytest-pep8
-pep8
-coverage
