@@ -10,6 +10,7 @@ from .sshkey import SSHKey
 
 
 class Droplet:
+
     """Manage operations related to Droplets."""
 
     def __init__(self, render):
@@ -89,6 +90,11 @@ class Droplet:
         if name in [d.name for d in self.list()]:
             raise DropletException(
                 'This would create two droplets with the same hostname.')
+
+        # keys should be a empty list, instead of None if nothing is passed
+        # as later it is iterated upon, without this error is raised.
+        if keys is None:
+            keys = []
 
         size_id = self.size.id_from_name(size)
         image_id = self.image.id_from_name(image)

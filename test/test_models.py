@@ -85,6 +85,13 @@ class TestDroplet(object):
         for server in self.droplet.list():
             assert isinstance(server, Struct)
 
+    def test_empty_ssh_keys(self):
+        ''' No keys will be passed in, shouldnt raise any error. '''
+
+        _request.side_effect = _respond
+
+        assert(isinstance(self.droplet.create(name="abcd", size="512MB", image="Foobuntu 12.04 x64", region="Foo York 2"), Struct))
+
     def test_id_from_name(self):
         _request.side_effect = _respond
 
