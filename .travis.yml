@@ -5,7 +5,6 @@ language: python
 env:
   - MOCK=1 TOXENV=py26
   - MOCK=1 TOXENV=py27
-  - MOCK=1 TOXENV=py32
   - MOCK=1 TOXENV=py33
   - MOCK=1 TOXENV=py34
   - MOCK=1 TOXENV=pypy
