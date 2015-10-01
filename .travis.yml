@@ -3,12 +3,12 @@ sudo: false # use Travis container based infrastructure
 language: python
 
 env:
-  - MOCK=1 TOXENV=py26
-  - MOCK=1 TOXENV=py27
-  - MOCK=1 TOXENV=py33
-  - MOCK=1 TOXENV=py34
-  - MOCK=1 TOXENV=pypy
-  - MOCK=1 TOXENV=pypy3
+  - MOCK=1 TOXENV=py26,coveralls
+  - MOCK=1 TOXENV=py27,coveralls
+  - MOCK=1 TOXENV=py33,coveralls
+  - MOCK=1 TOXENV=py34,coveralls
+  - MOCK=1 TOXENV=pypy,coveralls
+  - MOCK=1 TOXENV=pypy3,coveralls
 
 install:
   - pip install tox
