@@ -12,9 +12,7 @@ packages = [
     'pontoon',
 ]
 
-requires = ["docopt >= 0.6.0",
-            "PyYAML",
-            "requests"]
+requires = open("requirements/base.txt").read().split()
 
 scripts = glob('scripts/pontoon*')
 

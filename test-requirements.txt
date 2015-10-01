@@ -1,6 +1,0 @@
-pytest
-pytest-cov
-pytest-pep8
-pep8
-coverage
-coveralls

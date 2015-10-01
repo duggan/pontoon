@@ -3,15 +3,24 @@ sudo: false # use Travis container based infrastructure
 language: python
 
 env:
-  - MOCK=1 TOXENV=py26,coveralls
-  - MOCK=1 TOXENV=py27,coveralls
-  - MOCK=1 TOXENV=py33,coveralls
-  - MOCK=1 TOXENV=py34,coveralls
-  - MOCK=1 TOXENV=pypy,coveralls
-  - MOCK=1 TOXENV=pypy3,coveralls
+  global:
+    - MOCK=1
+  matrix:
+  - TOXENV=py26,lib,cli,coverage,coveralls
+  - TOXENV=py27,lib,cli,coverage,coveralls
+  - TOXENV=py33,lib,cli,coverage,coveralls
+  - TOXENV=py34,lib,cli,coverage,coveralls
+  - TOXENV=pypy,lib,cli,coverage,coveralls
+  - TOXENV=pypy3,lib,cli,coverage,coveralls
+  - TOXENV=py26,install
+  - TOXENV=py27,install
+  - TOXENV=py33,install
+  - TOXENV=py34,install
+  - TOXENV=pypy,install
+  - TOXENV=pypy3,install
 
 install:
-  - pip install tox
+  - pip install tox --use-mirrors
 
 before_script:
   - git clone https://github.com/sstephenson/bats.git /tmp/bats
