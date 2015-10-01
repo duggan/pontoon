@@ -1,27 +1,27 @@
+sudo: false # use Travis container based infrastructure
+
 language: python
-python:
-  - 2.6
-  - 2.7
-  - 3.2
-  - 3.3
-  - pypy
+
 env:
-  - MOCK=1
-before_install:
-  - sudo add-apt-repository ppa:duggan/bats --yes
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq bats
+  - MOCK=1 TOXENV=py26,coveralls
+  - MOCK=1 TOXENV=py27,coveralls
+  - MOCK=1 TOXENV=py33,coveralls
+  - MOCK=1 TOXENV=py34,coveralls
+  - MOCK=1 TOXENV=pypy,coveralls
+  - MOCK=1 TOXENV=pypy3,coveralls
+
 install:
-  - pip install -r requirements.txt --use-mirrors
-  - pip install coveralls --use-mirrors
-  - python setup.py install
+  - pip install tox
+
+before_script:
+  - git clone https://github.com/sstephenson/bats.git /tmp/bats
+  - mkdir -p /tmp/local
+  - bash /tmp/bats/install.sh /tmp/local
+  - export PATH=$PATH:/tmp/local/bin
+
 script:
-  - bats test/bats
-  - py.test --pep8 pontoon
-  - py.test --cov=pontoon
-  - coverage report -m
-after_success:
-  - coveralls
+  - tox
+
 notifications:
   email:
     on_success: never

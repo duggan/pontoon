@@ -210,7 +210,7 @@ def _respond(target, method='GET', params={}):
                 'locked': False,
                 'created_at': timestamp(),
                 'private_ip_address': None
-                }
+            }
             mocked['droplets'].append(new)
 
             return {'droplet': new}
@@ -220,7 +220,7 @@ def _respond(target, method='GET', params={}):
                 'id': randrange(100, 999),
                 'name': params['name'],
                 'ssh_pub_key': params['ssh_pub_key']
-                }
+            }
             mocked['ssh_keys'].append(new)
 
             return {'ssh_key': new}

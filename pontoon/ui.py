@@ -149,10 +149,10 @@ def box(text, decor='*', decor_x=None, decor_y=None,
     text = "\n".join([
         "{decor_y}{text}{decor_y}".format(
             decor_y=decor_y, text=m.center(
-                boxwidth-decor_y_multiplier)) for m in text])
+                boxwidth - decor_y_multiplier)) for m in text])
     border_x = (decor_x * decor_x_multiplier)
     border_space = "{decor_y}{spacer}{decor_y}".format(
-        decor_y=decor_y, spacer=(" " * (boxwidth-decor_y_multiplier)))
+        decor_y=decor_y, spacer=(" " * (boxwidth - decor_y_multiplier)))
     spacing = (' ' * boxwidth)
     text = "\n".join([
         spacing, border_x, border_space, text,
