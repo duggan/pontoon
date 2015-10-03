@@ -111,9 +111,9 @@ class DropletCommand(Command):
                                                self.args['--region'],
                                                ))
 
-        if (self.args['--private-networking']
-                and not re.match('^new york 2|amsterdam 2$',
-                                 self.args['--region'], re.IGNORECASE)):
+        if (self.args['--private-networking'] and
+            not re.match('^new york 2|amsterdam 2$',
+                         self.args['--region'], re.IGNORECASE)):
             ui.message("Warning: Only New York 2 and Amsterdam 2 are known "
                        "to support private networking.")
             ui.message("         We'll try to set it, but check after the "
