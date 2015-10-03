@@ -10,6 +10,7 @@ except ImportError:
 
 packages = [
     'pontoon',
+    'pontoon.cmd'
 ]
 
 requires = open("requirements/base.txt").read().split()
@@ -27,7 +28,20 @@ setup(
     packages=packages,
     package_data={'': ['LICENSE']},
     package_dir={'pontoon': 'pontoon'},
-    scripts=scripts,
+    # scripts=scripts,
+    entry_points={
+        "console_scripts": [
+            "pontoon = pontoon.cmd.pontoon:main",
+            "pontoon-configure = pontoon.cmd.pontoon_configure:main",
+            "pontoon-droplet = pontoon.cmd.pontoon_droplet:main",
+            "pontoon-event = pontoon.cmd.pontoon_event:main",
+            "pontoon-image = pontoon.cmd.pontoon_image:main",
+            "pontoon-region = pontoon.cmd.pontoon_region:main",
+            "pontoon-size = pontoon.cmd.pontoon_size:main",
+            "pontoon-snapshot = pontoon.cmd.pontoon_snapshot:main",
+            "pontoon-sshkey = pontoon.cmd.pontoon_sshkey:main"
+        ]
+    },
     include_package_data=True,
     install_requires=requires,
     license=open('LICENSE').read(),
