@@ -11,9 +11,9 @@ Options:
     -h --help       Show this page.
 """
 
-from pontoon import ui, configure
-from pontoon import Command
-from pontoon import SSHKeyException, ConfigureException
+from .. import ui, configure
+from .. import Command
+from .. import SSHKeyException, ConfigureException
 
 
 class SSHKeyCommand(Command):

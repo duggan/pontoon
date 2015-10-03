@@ -23,8 +23,8 @@ See 'pontoon help <command>' for more information on a specific command.
 
 from subprocess import call
 from docopt import docopt
-from pontoon.meta import __version__
-from pontoon import ui
+from ..meta import __version__
+from .. import ui
 
 
 def main():

@@ -12,9 +12,9 @@ Options:
     -h --help       Show this page.
 """
 
-from pontoon import ui
-from pontoon import Command
-from pontoon import SnapshotException
+from .. import ui
+from .. import Command
+from .. import SnapshotException
 
 
 class SnapshotCommand(Command):

@@ -7,9 +7,9 @@ Options:
 """
 
 import logging
-from pontoon import configure, ui
-from pontoon import Command
-from pontoon import ConfigureException
+from .. import configure, ui
+from .. import Command
+from .. import ConfigureException
 
 
 class ConfigureCommand(Command):

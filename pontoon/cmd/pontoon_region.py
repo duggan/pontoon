@@ -8,9 +8,9 @@ Options:
     -h --help       Show this page.
 """
 
-from pontoon import ui
-from pontoon import Command
-from pontoon import RegionException
+from .. import ui
+from .. import Command
+from .. import RegionException
 
 
 class RegionCommand(Command):

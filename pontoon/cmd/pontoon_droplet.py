@@ -59,9 +59,9 @@ Quick guide:
 
 import re
 from subprocess import call
-from pontoon import configure, ui
-from pontoon import PontoonException, DropletException, ImageException
-from pontoon import Command
+from .. import configure, ui
+from .. import PontoonException, DropletException, ImageException
+from .. import Command
 
 
 class DropletCommand(Command):
