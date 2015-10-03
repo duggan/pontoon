@@ -53,8 +53,7 @@ class SnapshotCommand(Command):
         return 0
 
 
-if __name__ == '__main__':
-
+def main():
     try:
         cmd = SnapshotCommand(str(__doc__))
         exit(cmd.run())
@@ -63,3 +62,6 @@ if __name__ == '__main__':
         exit(1)
 
     exit(0)
+
+if __name__ == '__main__':
+    main()

@@ -295,8 +295,7 @@ class DropletCommand(Command):
         ui.message("%s" % info[self.args['<field-name>']])
 
 
-if __name__ == '__main__':
-
+def main():
     try:
         config = configure.combined()
         cmd = DropletCommand(
@@ -310,3 +309,6 @@ if __name__ == '__main__':
     except PontoonException as e:
         ui.message(str(e))
         exit(1)
+
+if __name__ == '__main__':
+    main()
