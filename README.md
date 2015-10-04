@@ -3,7 +3,9 @@
 A Python CLI (and library) for [Digital Ocean](https://digitalocean.com).
 
 [![Coverage Status](https://coveralls.io/repos/duggan/pontoon/badge.png?branch=master)](https://coveralls.io/r/duggan/pontoon?branch=master)
-[![Build Status](https://travis-ci.org/duggan/pontoon.png?branch=master)](https://travis-ci.org/duggan/pontoon)
+ Linux: {[![Build Status on Linux](https://travis-ci.org/duggan/pontoon.png?branch=master)](https://travis-ci.org/duggan/pontoon)}
+ Windows: {[![Build status on Windows](https://ci.appveyor.com/api/projects/status/fj67qt2abc95i9ay?svg=true)](https://ci.appveyor.com/project/bendtherules/pontoon)}
+
 
 ## Introduction
 
