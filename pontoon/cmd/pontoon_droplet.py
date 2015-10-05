@@ -59,9 +59,9 @@ Quick guide:
 
 import re
 from subprocess import call
-from pontoon import configure, ui
-from pontoon import PontoonException, DropletException, ImageException
-from pontoon import Command
+from .. import configure, ui
+from .. import PontoonException, DropletException, ImageException
+from .. import Command
 
 
 class DropletCommand(Command):
@@ -111,9 +111,9 @@ class DropletCommand(Command):
                                                self.args['--region'],
                                                ))
 
-        if (self.args['--private-networking']
-                and not re.match('^new york 2|amsterdam 2$',
-                                 self.args['--region'], re.IGNORECASE)):
+        if (self.args['--private-networking'] and
+            not re.match('^new york 2|amsterdam 2$',
+                         self.args['--region'], re.IGNORECASE)):
             ui.message("Warning: Only New York 2 and Amsterdam 2 are known "
                        "to support private networking.")
             ui.message("         We'll try to set it, but check after the "
@@ -295,8 +295,7 @@ class DropletCommand(Command):
         ui.message("%s" % info[self.args['<field-name>']])
 
 
-if __name__ == '__main__':
-
+def main():
     try:
         config = configure.combined()
         cmd = DropletCommand(
@@ -310,3 +309,6 @@ if __name__ == '__main__':
     except PontoonException as e:
         ui.message(str(e))
         exit(1)
+
+if __name__ == '__main__':
+    main()

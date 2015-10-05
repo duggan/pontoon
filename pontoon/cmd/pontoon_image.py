@@ -11,9 +11,9 @@ Options:
     -h --help       Show this page.
 """
 
-from pontoon import ui
-from pontoon import Command
-from pontoon import ImageException
+from .. import ui
+from .. import Command
+from .. import ImageException
 
 
 class ImageCommand(Command):
@@ -41,8 +41,7 @@ class ImageCommand(Command):
         return 0
 
 
-if __name__ == '__main__':
-
+def main():
     try:
         cmd = ImageCommand(str(__doc__))
         exit(cmd.run())
@@ -51,3 +50,6 @@ if __name__ == '__main__':
         exit(1)
 
     exit(0)
+
+if __name__ == '__main__':
+    main()

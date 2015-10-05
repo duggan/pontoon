@@ -7,9 +7,9 @@ Options:
 """
 
 import logging
-from pontoon import configure, ui
-from pontoon import Command
-from pontoon import ConfigureException
+from .. import configure, ui
+from .. import Command
+from .. import ConfigureException
 
 
 class ConfigureCommand(Command):
@@ -128,8 +128,7 @@ class ConfigureCommand(Command):
         return 0
 
 
-if __name__ == '__main__':
-
+def main():
     try:
         cmd = ConfigureCommand(str(__doc__))
         exit(cmd.run("interactive"))
@@ -138,3 +137,6 @@ if __name__ == '__main__':
         exit(1)
 
     exit(0)
+
+if __name__ == '__main__':
+    main()

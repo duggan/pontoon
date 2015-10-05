@@ -12,9 +12,9 @@ Options:
     -h --help       Show this page.
 """
 
-from pontoon import ui
-from pontoon import Command
-from pontoon import SnapshotException
+from .. import ui
+from .. import Command
+from .. import SnapshotException
 
 
 class SnapshotCommand(Command):
@@ -53,8 +53,7 @@ class SnapshotCommand(Command):
         return 0
 
 
-if __name__ == '__main__':
-
+def main():
     try:
         cmd = SnapshotCommand(str(__doc__))
         exit(cmd.run())
@@ -63,3 +62,6 @@ if __name__ == '__main__':
         exit(1)
 
     exit(0)
+
+if __name__ == '__main__':
+    main()
