@@ -1,5 +1,9 @@
 sudo: false # use Travis container based infrastructure
 
+os:
+  - linux
+  - osx
+
 language: python
 
 env:
