@@ -2,7 +2,12 @@
 
 from __future__ import print_function
 
-import readline
+# Windows / missing-readline compat
+try:
+    import readline
+except ImportError:
+    pass
+
 import textwrap
 from os.path import (isfile, expanduser,
                      basename, splitext, join)
