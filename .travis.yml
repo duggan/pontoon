@@ -6,12 +6,12 @@ env:
   global:
     - MOCK=1
   matrix:
-  - TOXENV=py26,lib,cli,coverage,coveralls
+  - TOXENV=py26,lib,cli,coverage
   - TOXENV=py27,lib,cli,coverage,coveralls
-  - TOXENV=py33,lib,cli,coverage,coveralls
-  - TOXENV=py34,lib,cli,coverage,coveralls
-  - TOXENV=pypy,lib,cli,coverage,coveralls
-  - TOXENV=pypy3,lib,cli,coverage,coveralls
+  - TOXENV=py33,lib,cli,coverage
+  - TOXENV=py34,lib,cli,coverage
+  - TOXENV=pypy,lib,cli,coverage
+  - TOXENV=pypy3,lib,cli,coverage
   - TOXENV=py26,install
   - TOXENV=py27,install
   - TOXENV=py33,install
@@ -20,7 +20,7 @@ env:
   - TOXENV=pypy3,install
 
 install:
-  - pip install tox --use-mirrors
+  - pip install tox
 
 before_script:
   - git clone https://github.com/sstephenson/bats.git /tmp/bats
