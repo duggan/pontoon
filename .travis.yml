@@ -20,7 +20,7 @@ env:
   - TOXENV=pypy3,install
 
 install:
-  - pip install tox --use-mirrors
+  - pip install tox
 
 before_script:
   - git clone https://github.com/sstephenson/bats.git /tmp/bats
