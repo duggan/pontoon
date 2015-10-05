@@ -2,8 +2,9 @@
 
 A Python CLI (and library) for [Digital Ocean](https://digitalocean.com).
 
-[![Coverage Status](https://coveralls.io/repos/duggan/pontoon/badge.png?branch=master)](https://coveralls.io/r/duggan/pontoon?branch=master)
-[![Build Status](https://travis-ci.org/duggan/pontoon.png?branch=master)](https://travis-ci.org/duggan/pontoon)
+| Linux CI | Windows CI | Code Coverage | Docs |
+|:--------:|:----------:|:-------------:|:----:|
+| [![Build Status on Linux](https://travis-ci.org/duggan/pontoon.png?branch=master)](https://travis-ci.org/duggan/pontoon) | [![Build status on Windows](https://ci.appveyor.com/api/projects/status/rljdp3isvaj2pl3q?svg=true)](https://ci.appveyor.com/project/duggan/pontoon) | [![Coverage Status](https://coveralls.io/repos/duggan/pontoon/badge.png?branch=master)](https://coveralls.io/r/duggan/pontoon?branch=master) | [![Documentation Status](https://readthedocs.org/projects/pontoon/badge/?version=latest)](http://pontoon.readthedocs.org/en/latest/?badge=latest)
 
 ## Introduction
 
@@ -182,9 +183,3 @@ This functionality is implemented by the `@debug` decorator, the code for which 
 Set the `MOCK` environment variable (to anything) to return mock request data instead of querying Digital Ocean.
 
 This is implemented soley for end-to-end testing of the CLI, but you may find it useful in some other scenarios.
-
-## Addendum
-
-### Windows support
-
-Pontoon's lack of Windows support is a bug, not a feature. If you need pontoon on Windows, the best way to help get it there is with a pull request.
