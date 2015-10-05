@@ -184,9 +184,3 @@ This functionality is implemented by the `@debug` decorator, the code for which 
 Set the `MOCK` environment variable (to anything) to return mock request data instead of querying Digital Ocean.
 
 This is implemented soley for end-to-end testing of the CLI, but you may find it useful in some other scenarios.
-
-## Addendum
-
-### Windows support
-
-Pontoon's lack of Windows support is a bug, not a feature. If you need pontoon on Windows, the best way to help get it there is with a pull request.
