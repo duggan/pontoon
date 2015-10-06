@@ -1,10 +1,13 @@
-sudo: false # use Travis container based infrastructure
+sudo: false
 
 language: python
 
 env:
   global:
-    - MOCK=1
+  - MOCK=1
+  - PYPI_SERVER=testpypi
+  - secure: "SZU/BEa62l7jmI2GkXxRoT8e7i4MspkEnxfwYEmpOq2NK5kulxpy5UdvxsWu0xO/qeJHPdrFiSZfhtta8bcQFj1qfW7Dy9pCqzwMVNkGwhSoKCW6TzIlubTuy3CsDL0LQHmE1PiTryP6EuYUoMqz9vTcP+WNXjjEdLYnTr0rbNo="
+  - secure: "ESuLr046PkHWOq41LQYOh4BHfjcPhOzJAAchc7aT6hmjczpsYZ9dRCO2fqs8oMIrqrczDOv9XP0NI6wUdBNvXs+pbYfQiVjkmlLi/BMddYEBAB4ay3H8v0o3SZK2D6xMeB7mf6PTao+h2pR/Gg3HBWd4/cymhA48CCgOFbJEbnU="
   matrix:
   - TOXENV=py26,lib,cli,coverage
   - TOXENV=py27,lib,cli,coverage,coveralls
@@ -20,17 +23,20 @@ env:
   - TOXENV=pypy3,install
 
 install:
-  - pip install tox
+- pip install tox
 
 before_script:
-  - git clone https://github.com/sstephenson/bats.git /tmp/bats
-  - mkdir -p /tmp/local
-  - bash /tmp/bats/install.sh /tmp/local
-  - export PATH=$PATH:/tmp/local/bin
+- git clone https://github.com/sstephenson/bats.git /tmp/bats
+- mkdir -p /tmp/local
+- bash /tmp/bats/install.sh /tmp/local
+- export PATH=$PATH:/tmp/local/bin
 
 script:
-  - tox
+- tox
 
 notifications:
   email:
     on_success: never
+
+after_success:
+  - ./release.sh
