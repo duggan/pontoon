@@ -4,6 +4,12 @@ pontoon
 A Python CLI (and library) for `Digital
 Ocean <https://digitalocean.com>`__.
 
++---------------------------+-----------------------------+---------------------+--------------------------+
+| Linux CI                  | Windows CI                  | Code Coverage       | Docs                     |
++===========================+=============================+=====================+==========================+
+| |Build Status on Linux|   | |Build status on Windows|   | |Coverage Status|   | |Documentation Status|   |
++---------------------------+-----------------------------+---------------------+--------------------------+
+
 Introduction
 ------------
 
@@ -40,6 +46,12 @@ Install via pip:
 
     $ pip install pontoon
 
+To install the latest (development, unstable) release:
+
+::
+
+    $ pip install https://github.com/duggan/pontoon/archive/master.zip
+
 If you'd like to package pontoon for your favourite OS, feel free to do
 so (and please send a PR to this README!)
 
@@ -58,8 +70,8 @@ Set up your credentials and preferences:
     $ pontoon configure
 
 You'll be prompted for your Digital Ocean API credentials (`available
-here <https://www.digitalocean.com/api_access>`__), and whether you want
-to use existing SSH credentials or for them to be generated (using
+here <https://cloud.digitalocean.com/api_access>`__), and whether you
+want to use existing SSH credentials or for them to be generated (using
 OpenSSH).
 
 The rest are preferences, and can be set at any time by running
@@ -139,7 +151,7 @@ Contributing
 Pull requests for bugs are always welcome! New functionality should
 generally be preceded by a discussion, though if you've written
 something that you needed and want to contribute back, a pull request is
-a fine way to start that discussion :)
+a fine way to start that discussion :tada:
 
 All of the code in pontoon is
 `PEP-8 <http://www.python.org/dev/peps/pep-0008/>`__ audited (using
@@ -152,12 +164,21 @@ PEP-8 audit.
 Running the tests
 ~~~~~~~~~~~~~~~~~
 
-Running the tests locally requires the contents of ``requirements.txt``
-as well as bats.
+Tests are run via `Tox <https://tox.readthedocs.org>`__.
+
+For example, to test the library, CLI and coverage for Python 2.7, run:
 
 ::
 
-    $ pip install -r requirements.txt
+    $ pip install tox
+    $ tox -e py27,lib,cli,coverage
+
+The ``.travis.yml`` file in this repository enumerates all the tests
+that are performed.
+
+The CLI tests require `BATS <https://github.com/sstephenson/bats>`__,
+and PEP8 checks are performed in both the ``lib`` tests and ``cli``
+tests.
 
 On OSX, bats can be installed with homebrew:
 
@@ -172,13 +193,6 @@ On Debian/Ubuntu, I've set up a PPA for easy installation of bats:
     $ add-apt-repository ppa:duggan/bats
     $ apt-get update
     $ apt-get install bats
-
-Tests can then be run from the root directory:
-
-::
-
-    $ py.test --pep8 --cov pontoon
-    $ bats test/bats
 
 Debugging
 ~~~~~~~~~
@@ -219,12 +233,11 @@ request data instead of querying Digital Ocean.
 This is implemented soley for end-to-end testing of the CLI, but you may
 find it useful in some other scenarios.
 
-Addendum
---------
-
-Windows support
-~~~~~~~~~~~~~~~
-
-Pontoon's lack of Windows support is a bug, not a feature. If you need
-pontoon on Windows, the best way to help get it there is with a pull
-request.
+.. |Build Status on Linux| image:: https://travis-ci.org/duggan/pontoon.png?branch=master
+   :target: https://travis-ci.org/duggan/pontoon
+.. |Build status on Windows| image:: https://ci.appveyor.com/api/projects/status/rljdp3isvaj2pl3q?svg=true
+   :target: https://ci.appveyor.com/project/duggan/pontoon
+.. |Coverage Status| image:: https://coveralls.io/repos/duggan/pontoon/badge.png?branch=master
+   :target: https://coveralls.io/r/duggan/pontoon?branch=master
+.. |Documentation Status| image:: https://readthedocs.org/projects/pontoon/badge/?version=latest
+   :target: http://pontoon.readthedocs.org/en/latest/?badge=latest
