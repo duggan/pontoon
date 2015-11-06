@@ -1,40 +1,48 @@
 #!/usr/bin/env python
 
-"""Usage: pontoon region list [--with-ids]
+"""Usage: pontoon region list
 
 Options:
-    --with-ids      Include ids in output. Useful for other software that uses
-                    Digital Ocean ids for input (like Packer).
     -h --help       Show this page.
 """
 
-from .. import ui
+from docopt import docopt
+from digitalocean import Manager, Region
+from .. import configure, ui
 from .. import Command
-from .. import RegionException
-
 
 class RegionCommand(Command):
 
+    def __init__(self, config, args):
+        self.config = config
+        self.args = args
+        self.manager = Manager(token=config['api_token'])
+
     def list(self):
-        available = self.pontoon.region.list()
+        available = self.manager.get_all_regions()
         ui.message("Available regions:")
-        for r in available:
-            if self.args['--with-ids']:
-                ui.message(" - %-10s %s" % (str(r.id) + ':', r.name))
-            else:
-                ui.message(" - %s" % r.name)
+        ui.message("   %-10s %s" % ("name", "slug"))
+        ui.line(length=40)
+
+        for s in available:
+            print(s.__dict__)
+            ui.message(" - %-15s (%s)" %(s.name, s.slug))
         return 0
 
 
 def main():
     try:
-        cmd = RegionCommand(str(__doc__))
-        exit(cmd.run())
-    except RegionException as e:
+        configure.logger()
+
+        config = configure.combined()
+
+        args = docopt(str(__doc__))
+
+        exit(RegionCommand(config, args).run())
+
+    except Exception as e:
         ui.message(str(e))
         exit(1)
-
-    exit(0)
 
 if __name__ == '__main__':
     main()

@@ -1,40 +1,44 @@
 #!/usr/bin/env python
 
-"""Usage: pontoon size list [--with-ids]
+"""Usage: pontoon size list
 
 Options:
-    --with-ids      Include ids in output. Useful for other software that uses
-                    Digital Ocean ids for input (like Packer).
     -h --help       Show this page.
 """
 
-from .. import ui
+from docopt import docopt
+from digitalocean import Manager, Size
+from .. import configure, ui
 from .. import Command
-from .. import SizeException
-
 
 class SizeCommand(Command):
 
+    def __init__(self, config, args):
+        self.config = config
+        self.args = args
+        self.manager = Manager(token=config['api_token'])
+
     def list(self):
-        available = self.pontoon.size.list()
+        available = self.manager.get_all_sizes()
         ui.message("Available sizes:")
         for s in available:
-            if self.args['--with-ids']:
-                ui.message(" - %-10s %s" % (str(s.id) + ':', s.name))
-            else:
-                ui.message(" - %s" % s.name)
+            ui.message(" - %s" % s.slug)
         return 0
 
 
 def main():
     try:
-        cmd = SizeCommand(str(__doc__))
-        exit(cmd.run())
-    except SizeException as e:
+        configure.logger()
+
+        config = configure.combined()
+
+        args = docopt(str(__doc__))
+
+        exit(SizeCommand(config, args).run())
+
+    except Exception as e:
         ui.message(str(e))
         exit(1)
-
-    exit(0)
 
 if __name__ == '__main__':
     main()

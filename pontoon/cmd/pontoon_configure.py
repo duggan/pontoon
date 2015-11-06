@@ -7,6 +7,7 @@ Options:
 """
 
 import logging
+import digitalocean
 from .. import configure, ui
 from .. import Command
 from .. import ConfigureException
@@ -23,27 +24,20 @@ class ConfigureCommand(Command):
         ui.heading("Configure your Digital Ocean account with pontoon.")
         current = configure.combined()
 
-        existing_client_id = " (current: %s)" % ui.mask(
-            current['client_id']) if current['client_id'] else ""
-        existing_api_key = " (current: %s)" % ui.mask(
-            current['api_key']) if current['api_key'] else ""
+        existing_token = " (current: %s)" % ui.mask(
+            current['api_token']) if current['api_token'] else ""
 
-        client_id = ui.ask("Client ID%s" % existing_client_id)
-        api_key = ui.ask("API key%s" % existing_api_key)
+        api_token = ui.ask("Personal Access Token%s" % existing_token)
 
-        if client_id:
-            config['client_id'] = client_id
+        if api_token:
+            config['api_token'] = api_token
         else:
-            config['client_id'] = current['client_id']
+            config['api_token'] = current['api_token']
 
-        if api_key:
-            config['api_key'] = api_key
-        else:
-            config['api_key'] = current['api_key']
 
         if configure.ssh_tools():
             ui.notify("Pontoon can either use an existing SSH "
-                      "key or generate a new one using OpenSSH.")
+                      "key or generate a new one using OpenSSH (Linux/BSD/Mac only).")
         else:
             ui.warning("Pontoon cannot find openssl, "
                        "so won't be able to create keys.")
@@ -87,15 +81,14 @@ class ConfigureCommand(Command):
         public_key = configure.read_key(config['ssh_public_key'])
 
         ui.message("Registering public key to Digital Ocean...")
-        if len([k.name for k in configure.list_keys(
-               config) if k.name == config['auth_key_name']]) == 0:
-
+        try:
             configure.register_key(config,
                                    config['auth_key_name'],
                                    public_key)
             ui.message("ok!")
-        else:
-            ui.message("Already registered, moving on...")
+        except ConfigureException as e:
+            ui.message(str(e))
+            pass
 
         for option in ['size', 'region', 'image']:
             ui.message("Choose a default %s:" % option)
@@ -103,8 +96,8 @@ class ConfigureCommand(Command):
             option_index = 1
             options = getattr(configure, "%ss" % option)(config)
             for o in options:
-                option_choices[option_index] = o.name
-                ui.message(" %-3s %s" % (str(option_index) + '.', o.name))
+                option_choices[option_index] = o.slug
+                ui.message(" %-3s %s" % (str(option_index) + '.', o.slug))
                 option_index += 1
             selection = ui.ask("%s (1-%d)" % (option.title(),
                                               len(option_choices)))

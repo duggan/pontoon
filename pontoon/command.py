@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from . import configure, ui
-from . import Pontoon
+from . import ui
 
 
 class Command:
@@ -10,19 +9,6 @@ class Command:
 
     Parses docstrings and initalizes client.
     """
-
-    def __init__(self, doc, argv=None):
-        from docopt import docopt
-
-        configure.logger()
-        conf = configure.combined()
-
-        pontoon = Pontoon(conf['client_id'], conf['api_key'],
-                          mock=configure.mock_mode)
-        args = docopt(doc, argv=argv)
-
-        self.pontoon = pontoon
-        self.args = args
 
     def run(self, override=None):
         """Run the command specified by the docstring.

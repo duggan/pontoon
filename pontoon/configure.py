@@ -12,8 +12,8 @@ except ImportError:
 
 from subprocess import call, Popen, PIPE, CalledProcessError
 from . import debug
-from .pontoon import Pontoon
-from .exceptions import SSHKeyException, ConfigureException
+from .exceptions import ConfigureException
+from digitalocean import Manager, SSHKey
 
 user_cfg = os.path.join(os.path.expanduser('~'), '.pontoon')
 
@@ -24,11 +24,9 @@ else:
 
 local_cfg = os.path.join(os.getcwd(), '.pontoon')
 debug_mode = True if os.environ.get("DEBUG") else False
-mock_mode = True if os.environ.get("MOCK") else False
 logformat = '%(asctime)s [%(name)s:%(levelname)s] %(message)s'
 config_format = {
-    'client_id': "",
-    'api_key': "",
+    'api_token': "",
     'auth_key': "",
     'auth_key_name': "",
 }
@@ -38,11 +36,6 @@ defaults['username'] = {
     'value': 'root',
     'title': 'Droplet login username',
 }
-defaults['scrub_data'] = {
-    'value': True,
-    'title': 'Scrub data on Droplet termination',
-}
-
 
 def logger():
     """Prepare interface to logging."""
@@ -102,46 +95,42 @@ def combined():
 
 
 @debug
-def list_keys(credentials):
-    """Lists registered SSH keys"""
-    pontoon = Pontoon(credentials['client_id'], credentials['api_key'])
-    return pontoon.sshkey.list()
-
-
-@debug
 def register_key(credentials, name, public_key):
     """Register an SSH key with Digital Ocean"""
     try:
-        pontoon = Pontoon(credentials['client_id'], credentials['api_key'])
-        pontoon.sshkey.add(name, public_key)
-    except SSHKeyException as e:
+        sshkey = SSHKey(token=credentials['api_token'])
+        if not sshkey.load_by_pub_key(public_key):
+            sshkey.name = name
+            sshkey.public_key = public_key
+            sshkey.create()
+    except Exception as e:
         raise ConfigureException(str(e))
 
 
 def images(credentials):
     """Retrieve image options"""
     try:
-        pontoon = Pontoon(credentials['client_id'], credentials['api_key'])
-        return pontoon.image.list()
-    except PontoonException as e:
+        manager = Manager(token=credentials['api_token'])
+        return manager.get_global_images()
+    except Exception as e:
         raise ConfigureException(str(e))
 
 
 def sizes(credentials):
     """Retrieve size options"""
     try:
-        pontoon = Pontoon(credentials['client_id'], credentials['api_key'])
-        return pontoon.size.list()
-    except PontoonException as e:
+        manager = Manager(token=credentials['api_token'])
+        return manager.get_all_sizes()
+    except Exception as e:
         raise ConfigureException(str(e))
 
 
 def regions(credentials):
     """Retrieve region options"""
     try:
-        pontoon = Pontoon(credentials['client_id'], credentials['api_key'])
-        return pontoon.region.list()
-    except PontoonException as e:
+        manager = Manager(token=credentials['api_token'])
+        return manager.get_all_regions()
+    except Exception as e:
         raise ConfigureException(str(e))
 
 
