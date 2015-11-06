@@ -26,7 +26,7 @@ class ImageCommand(Command):
 
     def _get_image(self, name):
         resources = self.manager.get_all_images()
-        resource = [resource for resource in resources if resource.name == name]
+        resource = [res for res in resources if res.name == name]
 
         if len(resource) > 1:
             ui.warning("Warning: multiple images with identical "
@@ -51,9 +51,10 @@ class ImageCommand(Command):
 
         for s in available:
             if self.args['--with-ids']:
-                ui.message(" - %-10s %-10s %s" % (str(s.id) + ':', s.distribution, s.name))
+                ui.message(" - %-10s %-10s %s" % (
+                           str(s.id) + ':', s.distribution, s.name))
             else:
-                ui.message(" - %-10s %s" %(s.distribution, s.name))
+                ui.message(" - %-10s %s" % (s.distribution, s.name))
         return 0
 
     def show(self):

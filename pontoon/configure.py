@@ -37,6 +37,7 @@ defaults['username'] = {
     'title': 'Droplet login username',
 }
 
+
 def logger():
     """Prepare interface to logging."""
     logger = logging.getLogger('pontoon')

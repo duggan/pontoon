@@ -27,16 +27,19 @@ try:
 except:
     user_input = input
 
-# Borrowed from http://stackoverflow.com/questions/5121931/in-python-how-can-you-load-yaml-mappings-as-ordereddicts
+
+# Borrowed from http://stackoverflow.com/questions/5121931
 def ordered_dump(data, stream=None, Dumper=yaml.Dumper, **kwds):
     class OrderedDumper(Dumper):
         pass
+
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(
             yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
             data.items())
     OrderedDumper.add_representer(OrderedDict, _dict_representer)
     return yaml.dump(data, stream, OrderedDumper, **kwds)
+
 
 def ticker():
     """A loading/waiting indicator.
@@ -104,7 +107,7 @@ def format_droplet_info(machine):
     d['region'] = machine.region['slug']
     d['ip_address'] = machine.ip_address
     d['status'] = machine.status
-    
+
     # Fields we want to remove / replace
     redacted = ['token', 'end_point', 'image', 'region', 'size']
     details = machine.__dict__
@@ -131,11 +134,12 @@ def format_event(action):
     for k, v in details.items():
         if k.startswith('_') or k in redacted:
             del details[k]
-        
+
     for k, v in details.items():
         e[k] = v
 
     return e
+
 
 def format_item(item):
     """Present any item in more human parseable format"""
@@ -148,11 +152,12 @@ def format_item(item):
     for k, v in details.items():
         if k.startswith('_') or k in redacted:
             del details[k]
-        
+
     for k, v in details.items():
         i[k] = v
 
     return i
+
 
 def message(text):
     """Wrapper for the `print` function"""
@@ -162,7 +167,9 @@ def message(text):
 
 def yaml_message(data):
     """ Formats output as ordered YAML """
-    message(ordered_dump(data, Dumper=yaml.SafeDumper, default_flow_style=False))
+    message(ordered_dump(data,
+                         Dumper=yaml.SafeDumper,
+                         default_flow_style=False))
 
 
 def heading(text, boxwidth=60):

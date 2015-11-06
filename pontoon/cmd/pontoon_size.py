@@ -11,6 +11,7 @@ from digitalocean import Manager, Size
 from .. import configure, ui
 from .. import Command
 
+
 class SizeCommand(Command):
 
     def __init__(self, config, args):

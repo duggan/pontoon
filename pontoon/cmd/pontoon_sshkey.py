@@ -26,7 +26,7 @@ class SSHKeyCommand(Command):
 
     def _get_sshkey(self, name):
         resources = self.manager.get_all_sshkeys()
-        resource = [resource for resource in resources if resource.name == name]
+        resource = [res for res in resources if res.name == name]
 
         if len(resource) > 1:
             ui.warning("Warning: multiple SSH keys with identical "

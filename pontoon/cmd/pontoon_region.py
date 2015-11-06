@@ -11,6 +11,7 @@ from digitalocean import Manager, Region
 from .. import configure, ui
 from .. import Command
 
+
 class RegionCommand(Command):
 
     def __init__(self, config, args):
@@ -26,7 +27,7 @@ class RegionCommand(Command):
 
         for s in available:
             print(s.__dict__)
-            ui.message(" - %-15s (%s)" %(s.name, s.slug))
+            ui.message(" - %-15s (%s)" % (s.name, s.slug))
         return 0
 
 

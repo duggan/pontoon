@@ -15,6 +15,11 @@ from .. import ConfigureException
 
 class ConfigureCommand(Command):
 
+    def __init__(self, config, args):
+        self.config = config
+        self.args = args
+        self.manager = Manager(token=config['api_token'])
+
     def interactive(args):
         config = {}
         default = {}
@@ -34,10 +39,10 @@ class ConfigureCommand(Command):
         else:
             config['api_token'] = current['api_token']
 
-
         if configure.ssh_tools():
             ui.notify("Pontoon can either use an existing SSH "
-                      "key or generate a new one using OpenSSH (Linux/BSD/Mac only).")
+                      "key or generate a new one using OpenSSH "
+                      "(Linux/BSD/Mac only)")
         else:
             ui.warning("Pontoon cannot find openssl, "
                        "so won't be able to create keys.")
@@ -123,13 +128,17 @@ class ConfigureCommand(Command):
 
 def main():
     try:
-        cmd = ConfigureCommand(str(__doc__))
-        exit(cmd.run("interactive"))
-    except ConfigureException as e:
+        configure.logger()
+
+        config = configure.combined()
+
+        args = docopt(str(__doc__))
+
+        exit(SizeCommand(config, args).run("interactive"))
+
+    except Exception as e:
         ui.message(str(e))
         exit(1)
-
-    exit(0)
 
 if __name__ == '__main__':
     main()

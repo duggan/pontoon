@@ -27,7 +27,8 @@ Options:
     -h --help              Show this page.
     --detail               Show full Droplet info.
     --field=<field>        Retrieve specified field from Droplet output.
-                           Access with dot notation (pontoon droplet show foo --field=networks.v4.0.ip_address)
+                           Access with dot notation:
+                              e.g., --field=networks.v4.0.ip_address
     --size=<size>          Droplet RAM allocation. [default: {size}]
     --image=<image>        Droplet image. [default: {image}]
     --region=<region>      Droplet region. [default: {region}]
@@ -85,7 +86,7 @@ class DropletCommand(Command):
 
     def _get_image(self, name):
         resources = self.manager.get_my_images()
-        resource = [resource for resource in resources if resource.name == name]
+        resource = [res for res in resources if res.name == name]
 
         if len(resource) > 1:
             ui.warning("Warning: multiple images with identical "
@@ -142,7 +143,9 @@ class DropletCommand(Command):
 
         try:
             droplet = Droplet(token=self.config['api_token'])
-            ssh_keys = [k.id for k in self.manager.get_all_sshkeys() if k.name in self.args['--keys']]
+            ssh_keys = [k.id for k in
+                        self.manager.get_all_sshkeys() if k.name in
+                        self.args['--keys']]
 
             droplet.create(
                 name=self.args['<name>'],
@@ -201,7 +204,8 @@ class DropletCommand(Command):
 
             # Check whether Droplet is powered off
             if droplet.status != 'off':
-                if ui.ask_yesno("Droplet must be shut down during this process, proceed?"):
+                if ui.ask_yesno("Droplet must be shut down during "
+                                "this process, proceed?"):
                     ui.message("Shutting down Droplet...")
                     event = droplet.shutdown()
                     self._wait(event, droplet, status="off")
@@ -231,7 +235,8 @@ class DropletCommand(Command):
 
             # Check whether Droplet is powered off
             if droplet.status != 'off':
-                if ui.ask_yesno("Droplet must be shut down during this process, proceed?"):
+                if ui.ask_yesno("Droplet must be shut down during this process"
+                                ", proceed?"):
                     ui.message("Shutting down Droplet...")
                     event = droplet.shutdown()
                     self._wait(event, droplet, status="shutdown")
@@ -269,7 +274,8 @@ class DropletCommand(Command):
             try:
                 result = reduce(lambda d, k: d[k], fields, details)
             except Exception as e:
-                ui.message("Could not access field '%s'" % self.args['--field'])
+                ui.message("Could not access field '%s'" % (
+                           self.args['--field']))
                 return 1
             if isinstance(result, dict) or isinstance(result, list):
                 ui.yaml_message(result)
@@ -376,7 +382,9 @@ class DropletCommand(Command):
     def backups(self):
         action = ''
         if self.args['--enable']:
-            ui.message("This action is no longer supported and will be removed in future versions. Backups must be enabled at Droplet creation time.")
+            ui.message("This action is no longer supported and will be "
+                       "removed in future versions. Backups must be enabled "
+                       "at Droplet creation time.")
             return 1
         elif self.args['--disable']:
             action = 'disable'
@@ -397,10 +405,10 @@ def main():
         config = configure.combined()
 
         args = docopt(str(__doc__.format(
-                size=config.get('size', None),
-                image=config.get('image', None),
-                region=config.get('region', None),
-                keys=config.get('auth_key_name', None))))
+            size=config.get('size', None),
+            image=config.get('image', None),
+            region=config.get('region', None),
+            keys=config.get('auth_key_name', None))))
 
         exit(DropletCommand(config, args).run())
 
