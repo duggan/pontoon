@@ -20,6 +20,3 @@ CHANGES:
    * **`--detail` output:** The V2 API now provides more information. Internally,
    this has been switched to a YAML formatted output for consistency.
    * **`--with-ids` removed:** the `pontoon region` and `pontoon size` commands no longer accept the `--with-ids` parameter, as DigitalOcean have stopped supplying IDs in the return of API V2.
-
-BUGFIXES:
-
