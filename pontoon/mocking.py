@@ -36,6 +36,7 @@ def get_builtins():
 
 def _raise(ex=None):
     """Wrapper for exceptions so they can be thrown from inside lambdas"""
+    exception = []
     if ex:
         exception.append(ex)
     if len(exception):
