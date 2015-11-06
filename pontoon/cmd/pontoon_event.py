@@ -9,7 +9,7 @@ Options:
 from docopt import docopt
 from digitalocean import Manager
 from .. import ui, configure
-from .. import Command
+from .command import Command
 
 
 class EventCommand(Command):

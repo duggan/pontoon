@@ -14,7 +14,7 @@ Options:
 from docopt import docopt
 from digitalocean import Manager, Image
 from .. import configure, ui
-from .. import Command
+from .command import Command
 
 
 class ImageCommand(Command):

@@ -9,8 +9,7 @@ Options:
 import logging
 import digitalocean
 from .. import configure, ui
-from .. import Command
-from .. import ConfigureException
+from .command import Command
 
 
 class ConfigureCommand(Command):
@@ -91,7 +90,7 @@ class ConfigureCommand(Command):
                                    config['auth_key_name'],
                                    public_key)
             ui.message("ok!")
-        except ConfigureException as e:
+        except Exception as e:
             ui.message(str(e))
             pass
 

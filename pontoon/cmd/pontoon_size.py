@@ -9,7 +9,7 @@ Options:
 from docopt import docopt
 from digitalocean import Manager, Size
 from .. import configure, ui
-from .. import Command
+from .command import Command
 
 
 class SizeCommand(Command):

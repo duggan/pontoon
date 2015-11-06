@@ -59,7 +59,7 @@ from subprocess import call
 from docopt import docopt
 from digitalocean import Manager, Droplet, SSHKey
 from .. import configure, ui
-from .. import Command
+from .command import Command
 
 
 class DropletCommand(Command):

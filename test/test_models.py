@@ -21,7 +21,7 @@ from pontoon import Command
 from pontoon import ui
 from pontoon import configure
 from pontoon.mocking import (_raise, capture_stdout, event_response,
-                             get_builtins, _respond, mocked)
+                             get_builtins, mocked)
 
 
 _manager = MagicMock(name='Manager')
