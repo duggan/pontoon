@@ -7,6 +7,7 @@ Options:
 """
 
 import logging
+from docopt import docopt
 import digitalocean
 from .. import configure, ui
 from ..command import Command
