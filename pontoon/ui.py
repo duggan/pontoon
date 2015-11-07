@@ -8,6 +8,7 @@ try:
 except ImportError:
     pass
 
+import yaml
 import textwrap
 from os.path import (isfile, expanduser,
                      basename, splitext, join)
@@ -25,6 +26,19 @@ try:
     user_input = raw_input
 except:
     user_input = input
+
+
+# Borrowed from http://stackoverflow.com/questions/5121931
+def ordered_dump(data, stream=None, Dumper=yaml.Dumper, **kwds):
+    class OrderedDumper(Dumper):
+        pass
+
+    def _dict_representer(dumper, data):
+        return dumper.represent_mapping(
+            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+            data.items())
+    OrderedDumper.add_representer(OrderedDict, _dict_representer)
+    return yaml.dump(data, stream, OrderedDumper, **kwds)
 
 
 def ticker():
@@ -83,45 +97,82 @@ def mask(text, masker='*'):
     return result
 
 
-def format_droplet_info(machine, size="", region="", image=""):
+def format_droplet_info(machine):
     """Present Droplet information in a more human parseable format"""
+
     d = OrderedDict()
     d['id'] = machine.id
-    d['name'] = machine.name
-    d['size'] = size
-    d['image'] = image
-    d['region'] = region
+    d['size'] = machine.size_slug
+    d['image'] = machine.image['slug']
+    d['region'] = machine.region['slug']
+    d['ip_address'] = machine.ip_address
+    d['status'] = machine.status
 
-    del machine.region_id
-    del machine.image_id
-    del machine.size_id
+    # Fields we want to remove / replace
+    redacted = ['token', 'end_point', 'image', 'region',
+                'size', 'mock_data', 'mock_status', 'mocked']
+    details = machine.__dict__
+    for k, v in details.items():
+        if k.startswith('_') or k in redacted:
+            del details[k]
 
-    for k, v in machine.__dict__.items():
+    for k, v in details.items():
         d[k] = v
-
     return d
 
 
-def format_event(event, type="", droplet=""):
+def format_event(action):
     """Present event information in a more human parseable format"""
     e = OrderedDict()
-    e['id'] = event.id
-    e['type'] = type
-    e['droplet'] = droplet
+    e['id'] = action.id
+    e['type'] = action.type
+    e['resource_type'] = action.resource_type
+    e['started_at'] = action.started_at
+    e['completed_at'] = action.completed_at
 
-    del event.event_type_id
-    del event.droplet_id
+    details = action.__dict__
+    redacted = ['token', 'end_point', 'region',
+                'mock_data', 'mock_status', 'mocked']
+    for k, v in details.items():
+        if k.startswith('_') or k in redacted:
+            del details[k]
 
-    for k, v in event.__dict__.items():
+    for k, v in details.items():
         e[k] = v
 
     return e
+
+
+def format_item(item):
+    """Present any item in more human parseable format"""
+    i = OrderedDict()
+    i['id'] = item.id
+    i['name'] = item.name
+
+    details = item.__dict__
+    redacted = ['token', 'end_point',
+                'mock_data', 'mock_status', 'mocked']
+    for k, v in details.items():
+        if k.startswith('_') or k in redacted:
+            del details[k]
+
+    for k, v in details.items():
+        i[k] = v
+
+    return i
 
 
 def message(text):
     """Wrapper for the `print` function"""
     print(text)
     return text
+
+
+def yaml_message(data):
+    """ Formats output as ordered YAML """
+    message(ordered_dump(data,
+                         Dumper=yaml.SafeDumper,
+                         default_flow_style=False))
 
 
 def heading(text, boxwidth=60):
@@ -137,6 +188,11 @@ def notify(text, boxwidth=60):
 def warning(text, boxwidth=60):
     """Create a 'warning' styled textbox"""
     return box(text, decor="!", boxwidth=boxwidth)
+
+
+def line(length=60, decor='-'):
+    """Write a line"""
+    print(decor * length)
 
 
 def box(text, decor='*', decor_x=None, decor_y=None,

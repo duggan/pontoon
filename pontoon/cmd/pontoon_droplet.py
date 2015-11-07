@@ -7,26 +7,28 @@
                                         [--private-networking]
                                         [--disable-virtio] [--no-wait]
           pontoon droplet ssh <name> [--user=<user>] [--key=<path-to-key>]
-          pontoon droplet rename <from> <to>
-          pontoon droplet resize <name> <size>
-          pontoon droplet snapshot <droplet-name> <snapshot-name>
-          pontoon droplet show <name>
+          pontoon droplet rename <from> <to> [--no-wait]
+          pontoon droplet resize <name> <size> [--no-wait]
+          pontoon droplet snapshot <droplet-name> <snapshot-name> [--no-wait]
+          pontoon droplet show <name> [--field=<field>]
           pontoon droplet status <name>
-          pontoon droplet destroy <name> [--no-scrub]
-          pontoon droplet start <name>
-          pontoon droplet shutdown <name>
-          pontoon droplet reboot <name>
-          pontoon droplet restore <name> <snapshot-name>
-          pontoon droplet rebuild <name> <image-name>
-          pontoon droplet powercycle <name> [--yes]
-          pontoon droplet poweroff <name> [--yes]
+          pontoon droplet destroy <name>
+          pontoon droplet start <name> [--no-wait]
+          pontoon droplet shutdown <name> [--no-wait]
+          pontoon droplet reboot <name> [--no-wait]
+          pontoon droplet restore <name> <snapshot-name> [--no-wait]
+          pontoon droplet rebuild <name> <image-name> [--no-wait]
+          pontoon droplet powercycle <name> [--yes] [--no-wait]
+          pontoon droplet poweroff <name> [--yes] [--no-wait]
           pontoon droplet passwordreset <name> [--yes]
           pontoon droplet backups <name> [ --enable | --disable ]
-          pontoon droplet field <name> <field-name>
 
 Options:
     -h --help              Show this page.
     --detail               Show full Droplet info.
+    --field=<field>        Retrieve specified field from Droplet output.
+                           Access with dot notation:
+                              e.g., --field=networks.v4.0.ip_address
     --size=<size>          Droplet RAM allocation. [default: {size}]
     --image=<image>        Droplet image. [default: {image}]
     --region=<region>      Droplet region. [default: {region}]
@@ -34,8 +36,6 @@ Options:
                            to Droplet(s) [default: {keys}].
     --private-networking   Assign private address to Droplet (where available)
     --disable-virtio       Disable VirtIO. (not recommended)
-    --no-scrub             Do not perform a secure erase of the drive
-                           on termination. (not recommended)
     --user=<user>          Override configured username for SSH login.
     --key=<path-to-key>    Override configured private key for SSH login.
     --yes                  Skip questions, assume any prompts will
@@ -52,22 +52,67 @@ Quick guide:
                                         configured account and SSH key.
         pontoon droplet destroy foo     Terminate a droplet and secure
                                         erase the underlying drive.
-        pontoon droplet field foo ip_address Output only the value of a
-                                        specific field of the droplet. Useful
-                                        use in scripting.
 """
 
 import re
 from subprocess import call
+from docopt import docopt
+from digitalocean import Manager, Droplet, SSHKey
 from .. import configure, ui
-from .. import PontoonException, DropletException, ImageException
-from .. import Command
+from ..command import Command
+from .. import MOCK
 
 
 class DropletCommand(Command):
 
+    def __init__(self, config, args):
+        self.config = config
+        self.args = args
+        self.manager = Manager(token=config['api_token'], mocked=MOCK)
+
+    def _get_droplet(self, name):
+        droplets = self.manager.get_all_droplets()
+        droplet = [droplet for droplet in droplets if droplet.name == name]
+
+        if len(droplet) > 1:
+            ui.warning("Warning: multiple Droplets with identical "
+                       "hostnames found. Actions on those Droplets "
+                       "will fail until this is resolved in the web UI.")
+            raise Exception("Multiple Droplets named '%s'" % name)
+
+        if len(droplet) == 0:
+            raise Exception("No Droplet named '%s'" % name)
+
+        return droplet[0]
+
+    def _get_image(self, name):
+        resources = self.manager.get_images()
+        resource = [res for res in resources if res.name == name]
+
+        if len(resource) > 1:
+            ui.warning("Warning: multiple images with identical "
+                       "names found. Actions on those images "
+                       "will fail until this is resolved in the web UI.")
+            raise Exception("Multiple images named '%s'" % name)
+
+        if len(resource) == 0:
+            raise Exception("No image named '%s'" % name)
+
+        return resource[0]
+
+    def _wait(self, event, droplet, status="completed"):
+        if not self.args['--no-wait']:
+            state = 'in-progress'
+            while state != 'completed':
+                actions = droplet.get_actions()
+                for action in actions:
+                    if action.id == event['action']['id']:
+                        state = action.status
+                ui.ticker()
+            ui.message(status)
+
     def list(self):
-        droplet_list = self.pontoon.droplet.list()
+        droplet_list = self.manager.get_all_droplets()
         if len(set(d.name for d in droplet_list)) != len(droplet_list):
             ui.warning("Warning: multiple Droplets with identical "
                        "hostnames found. Actions on those Droplets "
@@ -75,32 +120,18 @@ class DropletCommand(Command):
 
         for machine in droplet_list:
 
-            try:
-                s = self.pontoon.size.name_from_id(machine.size_id)
-                r = self.pontoon.region.name_from_id(machine.region_id)
-            except PontoonException as e:
-                ui.message(str(e))
-                return 1
-
-            try:
-                i = self.pontoon.image.name_from_id(machine.image_id)
-            except ImageException as e:
-                i = "%s [could not determine image name]" % machine.image_id
-
-            info = ui.format_droplet_info(machine, size=s, region=r, image=i)
-
             if self.args['--detail']:
                 ui.message(machine.name)
-                for k, v in info.items():
-                    ui.message("   %-20s %s" % (k + ':', v))
+                details = ui.format_droplet_info(machine)
+                ui.yaml_message(details)
             else:
                 ui.message("%-15s (%s, %s, %s, %s, %s)" % (
                     machine.name + ':',
-                    info['size'],
-                    info['image'],
-                    info['region'],
-                    info['ip_address'],
-                    info['status'],
+                    machine.size_slug,
+                    machine.image['slug'],
+                    machine.region['slug'],
+                    machine.ip_address,
+                    machine.status,
                 ))
 
     def create(self):
@@ -111,46 +142,52 @@ class DropletCommand(Command):
                                                self.args['--region'],
                                                ))
 
-        if (self.args['--private-networking'] and
-            not re.match('^new york 2|amsterdam 2$',
-                         self.args['--region'], re.IGNORECASE)):
-            ui.message("Warning: Only New York 2 and Amsterdam 2 are known "
-                       "to support private networking.")
-            ui.message("         We'll try to set it, but check after the "
-                       "droplet is active.")
+        try:
+            if self._get_droplet(self.args['<name>']):
+                ui.message("Cannot create two Droplets with same name.")
+                return 1
+        except Exception as e:
+            pass
 
         try:
-            self.pontoon.droplet.create(
+            droplet = Droplet(token=self.config['api_token'], mocked=MOCK)
+            ssh_keys = [k.id for k in
+                        self.manager.get_all_sshkeys() if k.name in
+                        self.args['--keys']]
+
+            droplet.create(
                 name=self.args['<name>'],
                 size=self.args['--size'],
                 image=self.args['--image'],
                 region=self.args['--region'],
-                keys=self.args['--keys'],
+                ssh_keys=ssh_keys,
                 private_networking=self.args['--private-networking'],
                 disable_virtio=self.args['--disable-virtio'])
-        except PontoonException as e:
+        except Exception as e:
             ui.message(str(e))
             return 1
 
         if not self.args['--no-wait']:
-            state = 'starting'
-            while state != 'active':
-                state = self.pontoon.droplet.status(self.args['<name>'])
+            state = 'in-progress'
+            while state != 'completed':
+                actions = droplet.get_actions()
+                for action in actions:
+                    if action.type == 'create':
+                        state = action.status
                 ui.ticker()
-            ui.message(state)
+            ui.message('active')
 
     def ssh(self):
-        config = configure.combined()
-        i = self.pontoon.droplet.show(self.args['<name>'])
+        droplet = self._get_droplet(self.args['<name>'])
         if self.args['--user']:
             username = self.args['--user']
         else:
-            username = config.get('username')
-        hostname = i.ip_address
+            username = self.config.get('username')
+        hostname = droplet.ip_address
         if self.args['--key']:
             auth_key = self.args['--key']
         else:
-            auth_key = config.get('ssh_private_key')
+            auth_key = self.config.get('ssh_private_key')
         auth_key = ui.full_path(auth_key)
 
         options = ['ssh',
@@ -164,78 +201,147 @@ class DropletCommand(Command):
     def rename(self):
         ui.message("Renaming from %s to %s..." % (
             self.args['<from>'], self.args['<to>']))
-        self.pontoon.droplet.rename(
-            self.args['<from>'], self.args['<to>'])
+        droplet = self._get_droplet(self.args['<from>'])
+        droplet.rename(self.args['<to>'])
 
     def resize(self):
         ui.message("Resizing %s to %s" % (
             self.args['<name>'], self.args['<size>']))
-        self.pontoon.droplet.resize(
-            self.args['<name>'], self.args['<size>'])
+        try:
+            droplet = self._get_droplet(self.args['<name>'])
+
+            # Check whether Droplet is powered off
+            if droplet.status != 'off':
+                if ui.ask_yesno("Droplet must be shut down during "
+                                "this process, proceed?"):
+                    ui.message("Shutting down Droplet...")
+                    event = droplet.shutdown()
+                    self._wait(event, droplet, status="off")
+                else:
+                    return
+
+            # Perform the resize
+            ui.message("Resizing...")
+            event = droplet.resize(self.args['<size>'])
+            self._wait(event, droplet, status="resized")
+
+            # Boot the Droplet on completion
+            if ui.ask_yesno("Boot Droplet?"):
+                ui.message("Booting...")
+                event = droplet.power_on()
+                self._wait(event, droplet)
+
+        except Exception as e:
+            ui.message("Failed to resize: %s" % str(e))
+            return 1
 
     def snapshot(self):
         ui.message("Snapshotting %s as %s..." % (
                    self.args['<droplet-name>'], self.args['<snapshot-name>']))
-        self.pontoon.droplet.snapshot(
-            self.args['<droplet-name>'], self.args['<snapshot-name>'])
-
-    def show(self):
-
-        machine = self.pontoon.droplet.show(self.args['<name>'])
         try:
-            s = self.pontoon.size.name_from_id(machine.size_id)
-            r = self.pontoon.region.name_from_id(machine.region_id)
-            i = self.pontoon.image.name_from_id(machine.image_id)
-        except PontoonException as e:
-            ui.message(str(e))
+            droplet = self._get_droplet(self.args['<droplet-name>'])
+
+            # Check whether Droplet is powered off
+            if droplet.status != 'off':
+                if ui.ask_yesno("Droplet must be shut down during this process"
+                                ", proceed?"):
+                    ui.message("Shutting down Droplet...")
+                    event = droplet.shutdown()
+                    self._wait(event, droplet, status="shutdown")
+                else:
+                    return
+
+            ui.message("Beginning snapshot...")
+            event = droplet.take_snapshot(self.args['<snapshot-name>'])
+            self._wait(event, droplet)
+
+            # Boot the Droplet on completion
+            if ui.ask_yesno("Boot Droplet?"):
+                ui.message("Booting...")
+                event = droplet.power_on()
+                self._wait(event, droplet)
+
+        except Exception as e:
+            ui.message("Failed to snapshot: %s" % str(e))
             return 1
 
-        ui.message("%s" % self.args['<name>'])
-        info = ui.format_droplet_info(machine, size=s, region=r, image=i)
-        for k, v in info.items():
-            ui.message("   %-20s %s" % (k + ':', v))
+    def show(self):
+        droplet = self._get_droplet(self.args['<name>'])
+        details = ui.format_droplet_info(droplet)
+
+        # Uses a dot notation (foo.bar.baz) to access droplet details
+        # to arbitrary depth.
+        if self.args['--field']:
+            fields = []
+            for f in self.args['--field'].split('.'):
+                if f.isdigit():
+                    fields.append(int(f))
+                else:
+                    fields.append(f)
+
+            try:
+                result = reduce(lambda d, k: d[k], fields, details)
+            except Exception as e:
+                ui.message("Could not access field '%s'" % (
+                           self.args['--field']))
+                return 1
+            if isinstance(result, dict) or isinstance(result, list):
+                ui.yaml_message(result)
+            else:
+                ui.message(result)
+        else:
+            ui.message(droplet.name)
+            ui.yaml_message(details)
 
     def status(self):
-        ui.message(self.pontoon.droplet.status(self.args['<name>']))
+        droplet = self._get_droplet(self.args['<name>'])
+        ui.message(droplet.status)
 
     def destroy(self):
-        scrubbing = ""
-        if not self.args['--no-scrub']:
-            scrubbing = " and scrubbing data"
-
-        ui.message("Destroying %s%s..." % (
-            self.args['<name>'], scrubbing))
-        self.pontoon.droplet.destroy(
-            self.args['<name>'], self.args['--no-scrub'])
+        ui.message("Destroying %s and scrubbing data..." % self.args['<name>'])
+        droplet = self._get_droplet(self.args['<name>'])
+        droplet.destroy()
 
     def start(self):
         ui.message("Starting %s..." % self.args['<name>'])
-        self.pontoon.droplet.start(self.args['<name>'])
+        droplet = self._get_droplet(self.args['<name>'])
+        event = droplet.power_on()
+        self._wait(event, droplet, status="active")
 
     def shutdown(self):
         ui.message("Shutting down %s" % self.args['<name>'])
-        self.pontoon.droplet.shutdown(self.args['<name>'])
+        droplet = self._get_droplet(self.args['<name>'])
+        event = droplet.shutdown()
+        self._wait(event, droplet, status="shutdown")
 
     def reboot(self):
         ui.message("Rebooting %s" % self.args['<name>'])
-        self.pontoon.droplet.reboot(self.args['<name>'])
+        droplet = self._get_droplet(self.args['<name>'])
+        event = droplet.reboot()
+        self._wait(event, droplet, status="rebooted")
 
     def restore(self):
         ui.message("Restoring %s from snapshot %s..." % (
                    self.args['<name>'], self.args['<snapshot-name>']))
-        self.pontoon.droplet.restore(
-            self.args['<name>'], self.args['<snapshot-name>'])
+        droplet = self._get_droplet(self.args['<name>'])
+        image = self._get_image(self.args['<snapshot-name>'])
+        event = droplet.restore(image.id)
+        self._wait(event, droplet, status="restored")
 
     def rebuild(self):
         ui.message("Rebuilding %s using %s..." % (
                    self.args['<name>'], self.args['<image-name>']))
-        self.pontoon.droplet.rebuild(
-            self.args['<name>'], self.args['<image-name>'])
+        droplet = self._get_droplet(self.args['<name>'])
+        image = self._get_image(self.args['<image-name>'])
+        event = droplet.rebuild(image.id)
+        self._wait(event, droplet, status="rebuilt")
 
     def powercycle(self):
+        droplet = self._get_droplet(self.args['<name>'])
         if self.args['--yes']:
             ui.message('Powercycling %s...' % self.args['<name>'])
-            self.pontoon.droplet.powercycle(self.args['<name>'])
+            event = droplet.power_cycle()
+            self._wait(event, droplet, status="powercycled")
         else:
             ui.notify("Powercycling a server could cause processes not to "
                       "shut down correctly, and potentially data loss or "
@@ -244,12 +350,15 @@ class DropletCommand(Command):
                       "a machine.")
             if ui.ask_yesno("Do you wish to continue?"):
                 ui.message('Powercycling %s...' % self.args['<name>'])
-                self.pontoon.droplet.powercycle(self.args['<name>'])
+                event = droplet.power_cycle()
+                self._wait(event, droplet, status="powercycled")
 
     def poweroff(self):
+        droplet = self._get_droplet(self.args['<name>'])
         if self.args['--yes']:
             ui.message('Powering off %s...' % self.args['<name>'])
-            self.pontoon.droplet.poweroff(self.args['<name>'])
+            event = droplet.power_off()
+            self._wait(event, droplet, status="poweroff")
         else:
             ui.notify("Powering off a server could cause processes not to "
                       "shut down correctly, and potentially data loss or "
@@ -257,26 +366,33 @@ class DropletCommand(Command):
                       "way to turn off a machine.")
             if ui.ask_yesno("Do you wish to continue?"):
                 ui.message('Powering off %s...' % self.args['<name>'])
-                self.pontoon.droplet.poweroff(self.args['<name>'])
+                event = droplet.power_off()
+                self._wait(event, droplet, status="poweroff")
 
     def passwordreset(self):
+        droplet = self._get_droplet(self.args['<name>'])
         if self.args['--yes']:
             ui.message('Resetting root password for %s...' % (
                 self.args['<name>']))
-            self.pontoon.droplet.passwordreset(self.args['<name>'])
+            event = droplet.reset_root_password()
+            self._wait(event, droplet, status="reset")
             ui.message('You should receive an email shortly.')
         else:
             ui.notify("Resetting the root password requires a reboot.")
             if ui.ask_yesno("Do you want to continue?"):
                 ui.message('Resetting root password for %s...' % (
                     self.args['<name>']))
-                self.pontoon.droplet.passwordreset(self.args['<name>'])
+                event = droplet.reset_root_password()
+                self._wait(event, droplet, status="reset")
                 ui.message('You should receive an email shortly.')
 
     def backups(self):
         action = ''
         if self.args['--enable']:
-            action = 'enable'
+            ui.message("This action is no longer supported and will be "
+                       "removed in future versions. Backups must be enabled "
+                       "at Droplet creation time.")
+            return 1
         elif self.args['--disable']:
             action = 'disable'
         else:
@@ -284,29 +400,26 @@ class DropletCommand(Command):
             return 1
 
         ui.message("%s backups for %s..." % (action, self.args['<name>']))
-        self.pontoon.droplet.backups(action, self.args['<name>'])
-
-    def field(self):
-        if '<field-name>' not in self.args:
-            ui.message('Parameter "field-name" must be given')
-            return 1
-        machine = self.pontoon.droplet.show(self.args['<name>'])
-        info = ui.format_droplet_info(machine)
-        ui.message("%s" % info[self.args['<field-name>']])
+        droplet = self._get_droplet(self.args['<name>'])
+        event = droplet.disable_backups()
+        self._wait(event, droplet, status="disabled")
 
 
 def main():
     try:
+        configure.logger()
+
         config = configure.combined()
-        cmd = DropletCommand(
-            str(__doc__.format(
-                size=config.get('size', None),
-                image=config.get('image', None),
-                region=config.get('region', None),
-                keys=config.get('auth_key_name', None),
-                scrub=config.get('scrub_data', None))))
-        exit(cmd.run())
-    except PontoonException as e:
+
+        args = docopt(str(__doc__.format(
+            size=config.get('size', None),
+            image=config.get('image', None),
+            region=config.get('region', None),
+            keys=config.get('auth_key_name', None))))
+
+        exit(DropletCommand(config, args).run())
+
+    except Exception as e:
         ui.message(str(e))
         exit(1)
 

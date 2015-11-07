@@ -5,7 +5,7 @@ export MOCK=1
 @test "List images" {
 	run pontoon image list
 	[ "$status" = 0 ]
-	[ "${lines[1]}" = " - Foobuntu 12.04 x64" ]
+	[ "${lines[3]}" = " - Ubuntu     14.04 x64" ]
 }
 
 @test "List OSes" {

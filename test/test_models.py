@@ -16,29 +16,16 @@ lib_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 test_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, lib_dir)
 
+from docopt import docopt
 from docopt import DocoptExit
-from pontoon import (PontoonException, DropletException,
-                     SnapshotException, ConfigureException,
-                     SSHKeyException, ImageException,
-                     RegionException, SizeException,
-                     EventException)
-from pontoon import Pontoon
-from pontoon import Command
-from pontoon import ClientException
-from pontoon.pontoon import Struct
+from pontoon.command import Command
 from pontoon import ui
 from pontoon import configure
 from pontoon.mocking import (_raise, capture_stdout, event_response,
-                             get_builtins, _respond, mocked)
+                             get_builtins)
 
 
-_request = MagicMock(name='request')
-_request.side_effect = _respond
-
-
-class Data(object):
-    pass
-
+_manager = MagicMock(name='Manager')
 
 _input = MagicMock(name='_input')
 
@@ -61,384 +48,11 @@ _open = MagicMock(name='open')
 _getuid = MagicMock(name='getuid')
 _getuid.return_value = 1
 
+_fake_config = {
+            'api_token': 'foobar',
+            'auth_key': '~/.ssh/foo',
+            'auth_key_name': 'foo'}
 
-@patch('pontoon.pontoon.Pontoon.request', _request)
-class TestRender:
-
-    client = Pontoon('foo', 'bar')
-
-    def test_render(self):
-        with raises(ClientException):
-            self.client.render('foo', "/foo/%s/bar" % Struct)
-
-        with raises(ClientException):
-            self.client.render('foo', '/foo/100/bar')
-
-
-@patch('pontoon.pontoon.Pontoon.request', _request)
-class TestDroplet(object):
-
-    droplet = Pontoon('foo', 'bar').droplet
-
-    def test_list(self):
-        _request.side_effect = _respond
-        for server in self.droplet.list():
-            assert isinstance(server, Struct)
-
-    def test_empty_ssh_keys(self):
-        ''' No keys will be passed in, shouldnt raise any error. '''
-
-        _request.side_effect = _respond
-
-        assert(isinstance(self.droplet.create(name="abcd", size="512MB", image="Foobuntu 12.04 x64", region="Foo York 2"), Struct))
-
-    def test_id_from_name(self):
-        _request.side_effect = _respond
-
-        assert self.droplet.id_from_name('foo') == 1
-
-        with raises(DropletException):
-            self.droplet.id_from_name('not-a-droplet')
-
-        mocked['droplets'].append({
-            'id': 9,
-            'name': 'baz',
-        })
-        with raises(DropletException):
-            self.droplet.id_from_name('baz')
-        mocked['droplets'].pop()
-
-    def test_name_from_id(self):
-        _request.side_effect = _respond
-        assert self.droplet.name_from_id(2) == 'bar'
-
-        with raises(DropletException):
-            self.droplet.name_from_id(999)
-
-    def test_show(self):
-        _request.side_effect = _respond
-
-        server = self.droplet.show("foo")
-        assert server.id == 1
-        server = self.droplet.show("baz")
-        assert server.id == 3
-        server = self.droplet.show("bar")
-        assert server.id == 2
-
-        with raises(DropletException):
-            self.droplet.show(200)
-
-    def test_create(self):
-        _request.side_effect = _respond
-        result = self.droplet.create(name="newfoo", size="512MB",
-                                     image="Bar 6.0 x64", region="Bardam 1",
-                                     keys=["foobarbaz"])
-        assert result.size_id == 1
-        assert result.image_id == 3
-        assert result.region_id == 2
-
-        with raises(DropletException):
-            result = self.droplet.create(name="newfoo", size="512MB",
-                                         image="Bar 6.0 x64",
-                                         region="Bardam 1",
-                                         keys=["foobarbaz"])
-
-        with raises(DropletException):
-            self.droplet.create()
-
-    def test_start(self):
-        _request.side_effect = _respond
-        e = self.droplet.start('foo')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.start('non-existant')
-
-    def test_shutdown(self):
-        _request.side_effect = _respond
-        e = self.droplet.shutdown('foo')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.shutdown('non-existant')
-
-    def test_snapshot(self):
-        _request.side_effect = _respond
-        e = self.droplet.snapshot('foo', 'snapshot-foo')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.snapshot('non-existant', 'snapshot-foo')
-
-    def test_restore(self):
-        _request.side_effect = _respond
-        e = self.droplet.restore('foo', 'snapshot-foo')
-        assert isinstance(e, int)
-
-        with raises(SnapshotException):
-            self.droplet.restore('foo', 'not-snapshot')
-
-    def test_rebuild(self):
-        _request.side_effect = _respond
-        e = self.droplet.rebuild('foo', 'Foobuntu 12.04 x64')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.rebuild('non-existant', 'not-snapshot')
-
-        with raises(ImageException):
-            self.droplet.rebuild('foo', 'not-snapshot')
-
-    def test_rename(self):
-        _request.side_effect = _respond
-        e = self.droplet.rename('foo', 'foofoo')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.rename('foo', 'bar')
-
-    def test_resize(self):
-        _request.side_effect = _respond
-        e = self.droplet.resize('foo', '1GB')
-        assert isinstance(e, int)
-
-        with raises(SizeException):
-            self.droplet.resize('foo', '64MB')
-
-    def test_destroy(self):
-        _request.side_effect = _respond
-        e = self.droplet.destroy('foo')
-        assert isinstance(e, int)
-        e = self.droplet.destroy('foo')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.destroy('non-existant')
-
-    def test_status(self):
-        _request.side_effect = _respond
-        status = self.droplet.status('foo')
-        assert status == 'active'
-
-        with raises(DropletException):
-            self.droplet.status('non-existant')
-
-    def test_reboot(self):
-        _request.side_effect = _respond
-        e = self.droplet.reboot('foo')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.reboot('non-existant')
-
-    def test_powercycle(self):
-        _request.side_effect = _respond
-        e = self.droplet.powercycle('foo')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.powercycle('non-existant')
-
-    def test_poweroff(self):
-        _request.side_effect = _respond
-        e = self.droplet.poweroff('foo')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.poweroff('non-existant')
-
-    def test_backups(self):
-        _request.side_effect = _respond
-        e = self.droplet.backups('enable', 'foo')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.backups('enable', 'non-existant')
-
-        e = self.droplet.backups('disable', 'foo')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.backups('disable', 'non-existant')
-
-    def test_passwordreset(self):
-        _request.side_effect = _respond
-        e = self.droplet.passwordreset('foo')
-        assert isinstance(e, int)
-
-        with raises(DropletException):
-            self.droplet.passwordreset('non-existant')
-
-
-@patch('pontoon.pontoon.Pontoon.request', _request)
-class TestImage(object):
-
-    image = Pontoon('foo', 'bar').image
-
-    def test_list(self):
-        for img in self.image.list():
-            assert isinstance(img, Struct)
-
-    def test_show(self):
-        img = self.image.show("Foobuntu 12.04 x64")
-        assert img.id == 1
-
-    def test_oses(self):
-        assert sorted(['Bar', 'Foobuntu']) == sorted(self.image.oses())
-
-    def test_id_from_name(self):
-        assert 1 == self.image.id_from_name('Foobuntu 12.04 x64')
-        with raises(ImageException):
-            foo = self.image.id_from_name('Foo')
-
-    def test_name_from_id(self):
-        assert 'Foobuntu 12.04 x32' == self.image.name_from_id(2)
-        with raises(ImageException):
-            foo = self.image.name_from_id(10)
-
-
-@patch('pontoon.pontoon.Pontoon.request', _request)
-class TestSnapshot(object):
-
-    snapshot = Pontoon('foo', 'bar').snapshot
-
-    def test_list(self):
-        for snap in self.snapshot.list():
-            assert isinstance(snap, Struct)
-
-    def test_show(self):
-        img = self.snapshot.show("snapshot-foo")
-        assert img.id == 1024
-
-    def test_id_from_name(self):
-        assert 1024 == self.snapshot.id_from_name('snapshot-foo')
-
-        with raises(SnapshotException):
-            foo = self.snapshot.id_from_name('not-a-snapshot')
-
-        mocked['snapshots'].append({
-            'id': 8192,
-            'name': 'snapshot-foo',
-            'distribution': 'Foobuntu'
-        })
-        with raises(SnapshotException):
-            foo = self.snapshot.id_from_name('snapshot-bar')
-        mocked['snapshots'].pop()
-
-    def test_destroy(self):
-        e = self.snapshot.destroy('snapshot-foo')
-        assert e == 'OK'
-        with raises(SnapshotException):
-            foo = self.snapshot.destroy('not-a-snapshot')
-
-    def test_transfer(self):
-        e = self.snapshot.transfer('snapshot-foo', 'Bardam 1')
-        assert isinstance(e, int)
-
-
-@patch('pontoon.pontoon.Pontoon.request', _request)
-class TestEvent(object):
-
-    event = Pontoon('foo', 'bar').event
-
-    def test_show(self):
-        e = self.event.show(999)
-        assert e.action_status == 'done'
-
-        with raises(EventException):
-            e = self.event.show(444)
-
-    def test_type_from_id(self):
-        t = self.event.type_from_id(8)
-        assert t == 'snapshot'
-
-        t = self.event.type_from_id(10)
-        assert t == 'unknown (10)'
-
-
-@patch('pontoon.pontoon.Pontoon.request', _request)
-class TestSize(object):
-
-    size = Pontoon('foo', 'bar').size
-
-    def test_list(self):
-        for s in self.size.list():
-            assert isinstance(s, Struct)
-
-    def test_id_from_name(self):
-        assert 1 == self.size.id_from_name('512MB')
-        with raises(SizeException):
-            self.size.id_from_name('Nonexistant')
-
-    def test_name_from_id(self):
-        assert '2GB' == self.size.name_from_id(3)
-        with raises(SizeException):
-            self.size.name_from_id(99)
-
-
-@patch('pontoon.pontoon.Pontoon.request', _request)
-class TestRegion(object):
-
-    region = Pontoon('foo', 'bar').region
-
-    def test_list(self):
-        for r in self.region.list():
-            assert isinstance(r, Struct)
-
-    def test_id_from_name(self):
-        assert 1 == self.region.id_from_name('Foo York 1')
-        with raises(RegionException):
-            self.region.id_from_name('Nonexistant')
-
-    def test_name_from_id(self):
-        assert 'Bardam 1' == self.region.name_from_id(2)
-        with raises(RegionException):
-            self.region.name_from_id(99)
-
-
-@patch('pontoon.pontoon.Pontoon.request', _request)
-class TestSSHKey(object):
-
-    sshkey = Pontoon('foo', 'bar').sshkey
-
-    def test_list(self):
-        for s in self.sshkey.list():
-            assert isinstance(s, Struct)
-
-    def test_show(self):
-        key = self.sshkey.show("foobarbaz")
-        assert key.name == 'foobarbaz'
-
-    def test_add(self):
-        key = self.sshkey.add("barbaz",
-                              "this_is_a_poor_attempt_at_ssh_public_key")
-        assert key.name == 'barbaz'
-
-        with raises(SSHKeyException):
-            key = self.sshkey.add("foobarbaz",
-                                  "this_is_a_poor_attempt_at_ssh_public_key")
-
-    def test_replace(self):
-        key = self.sshkey.replace("foobarbaz",
-                                  "this_is_a_poor_attempt_at_ssh_public_key")
-        assert key.name == 'foobarbaz'
-
-    def test_destroy(self):
-        e = self.sshkey.destroy("foobarbaz")
-        assert e == 'OK'
-
-    def test_id_from_name(self):
-        assert 1 == self.sshkey.id_from_name('foobarbaz')
-        with raises(SSHKeyException):
-            self.sshkey.id_from_name('Nonexistant')
-
-    def test_name_from_id(self):
-        assert 'foobarbaz' == self.sshkey.name_from_id(1)
-        with raises(SSHKeyException):
-            self.sshkey.name_from_id(99)
-
-
-@patch('pontoon.pontoon.Pontoon.request', _request)
 @patch('pontoon.ui.sleep', _sleep)
 @patch('pontoon.ui.user_input', _input)
 class TestUI:
@@ -476,22 +90,12 @@ class TestUI:
                 ('***********************************glikethat'))
 
     def test_format_droplet_info(self):
-        pontoon = Pontoon('foo', 'bar')
-        resp = ui.format_droplet_info(pontoon.droplet.show('foo'),
-                                      size="512MB", region="Bardam 1",
-                                      image="Foobuntu 12.04 x64")
-        assert resp['id'] == 1
-        assert resp['name'] == 'foo'
-        assert resp['region'] == 'Bardam 1'
+        # FIXME: needs lib mocking
+        pass
 
     def test_format_event(self):
-        pontoon = Pontoon('foo', 'bar')
-        resp = ui.format_event(pontoon.event.show(999),
-                               type=8,
-                               droplet='foo')
-        assert resp['id'] == 999
-        assert resp['type'] == 8
-        assert resp['droplet'] == 'foo'
+        # FIXME: needs lib mocking
+        pass
 
     def test_message(self):
         with capture_stdout() as capture:
@@ -540,7 +144,6 @@ class TestUI:
 @patch('pontoon.configure.call', _call)
 @patch('pontoon.configure.Popen', _Popen)
 @patch('%s.open' % get_builtins(), _open)
-@patch('pontoon.pontoon.Pontoon.request', _request)
 class TestConfigure:
 
     def test_ssh_tools(self):
@@ -563,37 +166,22 @@ class TestConfigure:
 
     def test_combined(self):
         fake_config = (
-            "client_id: foo\n"
-            "api_key: bar\n"
+            "api_token: foobar\n"
             "auth_key: ~/.ssh/foo\n"
             "auth_key_name: foo"
         ).encode('UTF-8')
 
         _open.side_effect = lambda *args, **kwargs: io.BytesIO(fake_config)
         assert configure.combined() == {
-            'client_id': 'foo',
-            'api_key': 'bar',
+            'api_token': 'foobar',
             'auth_key': '~/.ssh/foo',
             'auth_key_name': 'foo',
             'username': 'root',
-            'scrub_data': True,
-
         }
 
-    def test_list_keys(self):
-        r = configure.list_keys({'client_id': 'foo', 'api_key': 'bar'})
-        assert 'foobarbaz' in [k.name for k in r]
-
     def test_register_key(self):
-        r = configure.register_key({'client_id': 'foo', 'api_key': 'bar'},
-                                   'bar',
-                                   'bazbazbazbazbazbazbaz')
-        assert r is None
-
-        with raises(ConfigureException):
-            configure.register_key({'client_id': 'foo', 'api_key': 'bar'},
-                                   'foobarbaz',
-                                   'bazbazbazbazbazbazbaz')
+        # FIXME: needs lib mocking
+        pass
 
     def test_read_key(self):
         key_response = 'bazbazbazbazbazbazbaz'.encode('UTF-8')
@@ -610,36 +198,31 @@ class TestConfigure:
 
     def test_read_config(self):
         fake_config = (
-            "client_id: foo\n"
-            "api_key: bar\n"
+            "api_token: foobar\n"
             "auth_key: ~/.ssh/foo\n"
             "auth_key_name: foo"
         ).encode('UTF-8')
 
         _open.side_effect = lambda *args, **kwargs: io.BytesIO(fake_config)
         assert configure.read_config() == {
-            'client_id': 'foo',
-            'api_key': 'bar',
+            'api_token': 'foobar',
             'auth_key': '~/.ssh/foo',
             'auth_key_name': 'foo',
         }
         fake_config = (
-            "client_id: foo\n"
-            "api_key: bar\n"
+            "api_token: foobar\n"
             "auth_key: ~/.ssh/foo\n"
         ).encode('UTF-8')
 
         _open.side_effect = lambda *args, **kwargs: io.BytesIO(fake_config)
         assert configure.read_config() == {
-            'client_id': 'foo',
-            'api_key': 'bar',
+            'api_token': 'foobar',
             'auth_key': '~/.ssh/foo',
             'auth_key_name': None,
         }
         _open.side_effect = lambda x: (_raise(IOError))
         configure.read_config() == {
-            'client_id': 'foo',
-            'api_key': 'bar',
+            'api_token': 'foobar',
             'auth_key': '~/.ssh/foo',
             'auth_key_name': None,
         }
@@ -649,9 +232,17 @@ class TestCommand:
 
     def test_command(self):
         doc = """Usage: command foo"""
-        argv = ['foo']
+        config = _fake_config
+
+        with raises(DocoptExit):
+            args = docopt(str(doc))
 
         class SmallCommand(Command):
+
+            def __init__(self, config, args):
+                self.config = config
+                self.args = args
+                self.manager = _manager(token=config['api_token'])
 
             def foo(self):
                 print("foo-answer")
@@ -659,15 +250,10 @@ class TestCommand:
             def bar(self):
                 print("bar-answer")
 
-        command = SmallCommand(doc, argv=argv)
-
         with capture_stdout() as capture:
-            output = command.run()
+            output = SmallCommand(config, docopt(str(doc), argv=['foo'])).run()
         assert capture.result == "foo-answer\n"
 
         with capture_stdout() as capture:
-            output = command.run("bar")
+            output = SmallCommand(config, []).run("bar")
         assert capture.result == "bar-answer\n"
-
-        with raises(DocoptExit):
-            command = SmallCommand(doc, argv=['baz'])

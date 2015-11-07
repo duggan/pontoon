@@ -6,35 +6,43 @@ Options:
     -h --help       Show this page.
 """
 
-from .. import ui
-from .. import Command
-from .. import EventException
+from docopt import docopt
+from digitalocean import Manager
+from .. import ui, configure
+from ..command import Command
+from .. import MOCK
 
 
 class EventCommand(Command):
 
+    def __init__(self, config, args):
+        self.config = config
+        self.args = args
+        self.manager = Manager(token=config['api_token'], mocked=MOCK)
+
     def show(self):
-        ev = self.pontoon.event.show(self.args['<id>'])
-        ev = ui.format_event(
-            ev,
-            type=self.pontoon.event.type_from_id(ev.event_type_id),
-            droplet=self.pontoon.droplet.name_from_id(ev.droplet_id))
+        action = self.manager.get_action(self.args['<id>'])
+        details = ui.format_event(action)
 
         ui.message("Event %s" % self.args['<id>'])
-        for k, v in ev.items():
+        for k, v in details.items():
             ui.message("   %s: %s" % (k, v))
         return 0
 
 
 def main():
     try:
-        cmd = EventCommand(str(__doc__))
-        exit(cmd.run())
-    except EventException as e:
+        configure.logger()
+
+        config = configure.combined()
+
+        args = docopt(str(__doc__))
+
+        exit(EventCommand(config, args).run())
+
+    except Exception as e:
         ui.message(str(e))
         exit(1)
-
-    exit(0)
 
 if __name__ == '__main__':
     main()

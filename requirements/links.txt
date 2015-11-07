@@ -1,0 +1,1 @@
+http://github.com/duggan/python-digitalocean/tarball/updates#egg=digitalocean
