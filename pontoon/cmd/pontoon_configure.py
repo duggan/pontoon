@@ -8,7 +8,7 @@ Options:
 
 import logging
 from docopt import docopt
-import digitalocean
+from digitalocean import Manager
 from .. import configure, ui
 from ..command import Command
 from .. import MOCK
@@ -135,7 +135,7 @@ def main():
 
         args = docopt(str(__doc__))
 
-        exit(SizeCommand(config, args).run("interactive"))
+        exit(ConfigureCommand(config, args).run("interactive"))
 
     except Exception as e:
         ui.message(str(e))
