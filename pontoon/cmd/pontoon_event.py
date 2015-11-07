@@ -9,7 +9,8 @@ Options:
 from docopt import docopt
 from digitalocean import Manager
 from .. import ui, configure
-from .command import Command
+from ..command import Command
+from .. import MOCK
 
 
 class EventCommand(Command):
@@ -17,7 +18,7 @@ class EventCommand(Command):
     def __init__(self, config, args):
         self.config = config
         self.args = args
-        self.manager = Manager(token=config['api_token'])
+        self.manager = Manager(token=config['api_token'], mocked=MOCK)
 
     def show(self):
         action = self.manager.get_action(self.args['<id>'])

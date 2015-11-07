@@ -9,7 +9,8 @@ Options:
 import logging
 import digitalocean
 from .. import configure, ui
-from .command import Command
+from ..command import Command
+from .. import MOCK
 
 
 class ConfigureCommand(Command):
@@ -17,7 +18,7 @@ class ConfigureCommand(Command):
     def __init__(self, config, args):
         self.config = config
         self.args = args
-        self.manager = Manager(token=config['api_token'])
+        self.manager = Manager(token=config['api_token'], mocked=MOCK)
 
     def interactive(args):
         config = {}

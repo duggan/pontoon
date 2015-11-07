@@ -14,7 +14,8 @@ Options:
 from docopt import docopt
 from digitalocean import Manager, Image
 from .. import configure, ui
-from .command import Command
+from ..command import Command
+from .. import MOCK
 
 
 class ImageCommand(Command):
@@ -22,7 +23,7 @@ class ImageCommand(Command):
     def __init__(self, config, args):
         self.config = config
         self.args = args
-        self.manager = Manager(token=config['api_token'])
+        self.manager = Manager(token=config['api_token'], mocked=MOCK)
 
     def _get_image(self, name):
         resources = self.manager.get_all_images()

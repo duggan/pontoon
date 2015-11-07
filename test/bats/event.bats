@@ -3,7 +3,7 @@
 export MOCK=1
 
 @test "Show event" {
-	run pontoon event show 999
+	run pontoon event show 54321
 	[ "$status" = 0 ]
-	[ "${lines[0]}" = "Event 999" ]
+	[ "${lines[0]}" = "Event 54321" ]
 }

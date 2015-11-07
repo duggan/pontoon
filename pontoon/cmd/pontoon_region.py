@@ -9,7 +9,8 @@ Options:
 from docopt import docopt
 from digitalocean import Manager, Region
 from .. import configure, ui
-from .command import Command
+from ..command import Command
+from .. import MOCK
 
 
 class RegionCommand(Command):
@@ -17,7 +18,7 @@ class RegionCommand(Command):
     def __init__(self, config, args):
         self.config = config
         self.args = args
-        self.manager = Manager(token=config['api_token'])
+        self.manager = Manager(token=config['api_token'], mocked=MOCK)
 
     def list(self):
         available = self.manager.get_all_regions()
@@ -26,7 +27,6 @@ class RegionCommand(Command):
         ui.line(length=40)
 
         for s in available:
-            print(s.__dict__)
             ui.message(" - %-15s (%s)" % (s.name, s.slug))
         return 0
 

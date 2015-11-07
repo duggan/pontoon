@@ -59,7 +59,8 @@ from subprocess import call
 from docopt import docopt
 from digitalocean import Manager, Droplet, SSHKey
 from .. import configure, ui
-from .command import Command
+from ..command import Command
+from .. import MOCK
 
 
 class DropletCommand(Command):
@@ -67,11 +68,11 @@ class DropletCommand(Command):
     def __init__(self, config, args):
         self.config = config
         self.args = args
-        self.manager = Manager(token=config['api_token'])
+        self.manager = Manager(token=config['api_token'], mocked=MOCK)
 
     def _get_droplet(self, name):
-        droplet_list = self.manager.get_all_droplets()
-        droplet = [droplet for droplet in droplet_list if droplet.name == name]
+        droplets = self.manager.get_all_droplets()
+        droplet = [droplet for droplet in droplets if droplet.name == name]
 
         if len(droplet) > 1:
             ui.warning("Warning: multiple Droplets with identical "
@@ -85,7 +86,7 @@ class DropletCommand(Command):
         return droplet[0]
 
     def _get_image(self, name):
-        resources = self.manager.get_my_images()
+        resources = self.manager.get_images()
         resource = [res for res in resources if res.name == name]
 
         if len(resource) > 1:
@@ -142,7 +143,14 @@ class DropletCommand(Command):
                                                ))
 
         try:
-            droplet = Droplet(token=self.config['api_token'])
+            if self._get_droplet(self.args['<name>']):
+                ui.message("Cannot create two Droplets with same name.")
+                return 1
+        except Exception as e:
+            pass
+
+        try:
+            droplet = Droplet(token=self.config['api_token'], mocked=MOCK)
             ssh_keys = [k.id for k in
                         self.manager.get_all_sshkeys() if k.name in
                         self.args['--keys']]
@@ -290,8 +298,7 @@ class DropletCommand(Command):
         ui.message(droplet.status)
 
     def destroy(self):
-
-        ui.message("Destroying %s..." % self.args['<name>'])
+        ui.message("Destroying %s and scrubbing data..." % self.args['<name>'])
         droplet = self._get_droplet(self.args['<name>'])
         droplet.destroy()
 
@@ -310,7 +317,7 @@ class DropletCommand(Command):
     def reboot(self):
         ui.message("Rebooting %s" % self.args['<name>'])
         droplet = self._get_droplet(self.args['<name>'])
-        event = droplet.shutdown()
+        event = droplet.reboot()
         self._wait(event, droplet, status="rebooted")
 
     def restore(self):
@@ -325,7 +332,7 @@ class DropletCommand(Command):
         ui.message("Rebuilding %s using %s..." % (
                    self.args['<name>'], self.args['<image-name>']))
         droplet = self._get_droplet(self.args['<name>'])
-        image = self._get_image(self.args['<snapshot-name>'])
+        image = self._get_image(self.args['<image-name>'])
         event = droplet.rebuild(image.id)
         self._wait(event, droplet, status="rebuilt")
 

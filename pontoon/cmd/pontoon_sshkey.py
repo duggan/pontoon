@@ -14,7 +14,8 @@ Options:
 from docopt import docopt
 from digitalocean import Manager, SSHKey
 from .. import configure, ui
-from .command import Command
+from ..command import Command
+from .. import MOCK
 
 
 class SSHKeyCommand(Command):
@@ -22,7 +23,7 @@ class SSHKeyCommand(Command):
     def __init__(self, config, args):
         self.config = config
         self.args = args
-        self.manager = Manager(token=config['api_token'])
+        self.manager = Manager(token=config['api_token'], mocked=MOCK)
 
     def _get_sshkey(self, name):
         resources = self.manager.get_all_sshkeys()
@@ -51,7 +52,7 @@ class SSHKeyCommand(Command):
             self.args['<name>'], self.args['<public-key-path>']))
 
         public_key = configure.read_key(self.args['<public-key-path>'])
-        sshkey = SSHKey(token=self.config['api_token'])
+        sshkey = SSHKey(token=self.config['api_token'], mocked=MOCK)
         if not sshkey.load_by_pub_key(public_key):
             sshkey.name = self.args['<name>']
             sshkey.public_key = public_key

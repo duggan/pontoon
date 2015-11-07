@@ -14,6 +14,7 @@ from subprocess import call, Popen, PIPE, CalledProcessError
 from . import debug
 from .exceptions import ConfigureException
 from digitalocean import Manager, SSHKey
+from . import MOCK
 
 user_cfg = os.path.join(os.path.expanduser('~'), '.pontoon')
 
@@ -99,7 +100,7 @@ def combined():
 def register_key(credentials, name, public_key):
     """Register an SSH key with Digital Ocean"""
     try:
-        sshkey = SSHKey(token=credentials['api_token'])
+        sshkey = SSHKey(token=credentials['api_token'], mocked=MOCK)
         if not sshkey.load_by_pub_key(public_key):
             sshkey.name = name
             sshkey.public_key = public_key
@@ -111,7 +112,7 @@ def register_key(credentials, name, public_key):
 def images(credentials):
     """Retrieve image options"""
     try:
-        manager = Manager(token=credentials['api_token'])
+        manager = Manager(token=credentials['api_token'], mocked=MOCK)
         return manager.get_global_images()
     except Exception as e:
         raise ConfigureException(str(e))
@@ -120,7 +121,7 @@ def images(credentials):
 def sizes(credentials):
     """Retrieve size options"""
     try:
-        manager = Manager(token=credentials['api_token'])
+        manager = Manager(token=credentials['api_token'], mocked=MOCK)
         return manager.get_all_sizes()
     except Exception as e:
         raise ConfigureException(str(e))
@@ -129,7 +130,7 @@ def sizes(credentials):
 def regions(credentials):
     """Retrieve region options"""
     try:
-        manager = Manager(token=credentials['api_token'])
+        manager = Manager(token=credentials['api_token'], mocked=MOCK)
         return manager.get_all_regions()
     except Exception as e:
         raise ConfigureException(str(e))

@@ -9,7 +9,8 @@ Options:
 from docopt import docopt
 from digitalocean import Manager, Size
 from .. import configure, ui
-from .command import Command
+from ..command import Command
+from .. import MOCK
 
 
 class SizeCommand(Command):
@@ -17,7 +18,7 @@ class SizeCommand(Command):
     def __init__(self, config, args):
         self.config = config
         self.args = args
-        self.manager = Manager(token=config['api_token'])
+        self.manager = Manager(token=config['api_token'], mocked=MOCK)
 
     def list(self):
         available = self.manager.get_all_sizes()
