@@ -1,3 +1,9 @@
+## 0.2.1 (November 6, 2015)
+
+BUGFIXES:
+
+   * **`pontoon configure` fixed** was broken by the 0.2.0 release.
+
 ## 0.2.0 (November 6, 2015)
 
 This is mostly a maintenance update to keep Pontoon working with the Digital Ocean V2 API, as [V1 is being sunset soon](https://github.com/duggan/pontoon/issues/21). New functionality exposed by the API has not been integrated yet.
