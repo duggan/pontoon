@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-from .cache import cache
 from .log import debug
 
 from .exceptions import *

@@ -6,8 +6,6 @@ import contextlib
 from random import randrange
 from datetime import datetime, timedelta
 
-from .exceptions import ClientException
-
 # Python 2/3 compatibility for capture_stdout
 try:
     from StringIO import StringIO

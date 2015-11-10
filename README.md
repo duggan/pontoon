@@ -106,19 +106,6 @@ foobar
    ip_address:          192.0.2.128
 ```
 
-## Library Usage
-
-To use pontoon as a library, install from pip, and use like so:
-
-```
->>> from pontoon import Pontoon
->>> pontoon = Pontoon('my-client-id', 'my-api-key')
->>> pontoon.droplet.list()
-[<pontoon.pontoon.Struct instance at 0x106ecf950>]
-```
-
-The library component owes its genesis to [DOP](https://github.com/ahmontero/dop), by Antonio Hinojo.
-
 ## Contributing
 
 Pull requests for bugs are always welcome! New functionality should generally be preceded by a discussion, though if you've written something that you needed and want to contribute back, a pull request is a fine way to start that discussion :tada:
