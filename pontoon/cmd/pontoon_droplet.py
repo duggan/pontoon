@@ -6,7 +6,8 @@
                                         [--region=<region>] [--keys=<key>...]
                                         [--private-networking]
                                         [--disable-virtio] [--no-wait]
-          pontoon droplet ssh <name> [--user=<user>] [--key=<path-to-key>]
+          pontoon droplet ssh <name> [<command>]
+                                     [--user=<user>] [--key=<path-to-key>]
           pontoon droplet rename <from> <to> [--no-wait]
           pontoon droplet resize <name> <size> [--no-wait]
           pontoon droplet snapshot <droplet-name> <snapshot-name> [--no-wait]
@@ -190,12 +191,18 @@ class DropletCommand(Command):
             auth_key = self.config.get('ssh_private_key')
         auth_key = ui.full_path(auth_key)
 
+        command = ""
+        if self.args['<command>']:
+            command = self.args['<command>']
+
         options = ['ssh',
                    '-i', '%s' % auth_key,
                    '-o', 'StrictHostKeyChecking=no',
                    '-o', 'UserKnownHostsFile=/dev/null',
                    '-o', 'LogLevel=error',
-                   '%s@%s' % (username, hostname)]
+                   '%s@%s' % (username, hostname),
+                   '%s' % command]
+
         return call(options)
 
     def rename(self):
