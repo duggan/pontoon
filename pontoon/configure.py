@@ -161,7 +161,7 @@ def create_config(data):
     else:
         loc = user_cfg
 
-    with open(loc, 'w') as f:
+    with open(loc, 'wb') as f:
         f.write(data.encode('UTF-8'))
 
 
