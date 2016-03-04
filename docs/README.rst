@@ -4,12 +4,6 @@ pontoon
 A Python CLI (and library) for `Digital
 Ocean <https://digitalocean.com>`__.
 
-+---------------------------+-----------------------------+---------------------+--------------------------+
-| Linux CI                  | Windows CI                  | Code Coverage       | Docs                     |
-+===========================+=============================+=====================+==========================+
-| |Build Status on Linux|   | |Build status on Windows|   | |Coverage Status|   | |Documentation Status|   |
-+---------------------------+-----------------------------+---------------------+--------------------------+
-
 Introduction
 ------------
 
@@ -130,21 +124,6 @@ or for more detail:
        backups_active:      False
        ip_address:          192.0.2.128
 
-Library Usage
--------------
-
-To use pontoon as a library, install from pip, and use like so:
-
-::
-
-    >>> from pontoon import Pontoon
-    >>> pontoon = Pontoon('my-client-id', 'my-api-key')
-    >>> pontoon.droplet.list()
-    [<pontoon.pontoon.Struct instance at 0x106ecf950>]
-
-The library component owes its genesis to
-`DOP <https://github.com/ahmontero/dop>`__, by Antonio Hinojo.
-
 Contributing
 ------------
 
@@ -239,5 +218,6 @@ find it useful in some other scenarios.
    :target: https://ci.appveyor.com/project/duggan/pontoon
 .. |Coverage Status| image:: https://coveralls.io/repos/duggan/pontoon/badge.png?branch=master
    :target: https://coveralls.io/r/duggan/pontoon?branch=master
-.. |Documentation Status| image:: https://readthedocs.org/projects/pontoon/badge/?version=latest
+.. |Doc Status| image:: https://readthedocs.org/projects/pontoon/badge/?version=latest
    :target: http://pontoon.readthedocs.org/en/latest/?badge=latest
+
