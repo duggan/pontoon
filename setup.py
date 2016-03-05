@@ -2,7 +2,6 @@
 
 from pontoon.meta import (__version__, __description__, __author__,
                           __author_email__, __url__)
-from glob import glob
 try:
     from setuptools import setup
 except ImportError:
@@ -14,9 +13,6 @@ packages = [
 ]
 
 requires = open("requirements/base.txt").read().split()
-dependency_links = open("requirements/links.txt").read().split()
-
-scripts = glob('scripts/pontoon*')
 
 setup(
     name='pontoon',
@@ -29,7 +25,6 @@ setup(
     packages=packages,
     package_data={'': ['LICENSE']},
     package_dir={'pontoon': 'pontoon'},
-    # scripts=scripts,
     entry_points={
         "console_scripts": [
             "pontoon = pontoon.cmd.pontoon:main",
@@ -45,7 +40,6 @@ setup(
     },
     include_package_data=True,
     install_requires=requires,
-    dependency_links=dependency_links,
     license=open('LICENSE').read(),
     zip_safe=False,
     classifiers=(
@@ -59,6 +53,8 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: PyPy',
     ),
 )

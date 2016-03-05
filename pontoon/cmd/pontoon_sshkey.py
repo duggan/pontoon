@@ -12,7 +12,7 @@ Options:
 """
 
 from docopt import docopt
-from digitalocean import Manager, SSHKey
+from ..lib import Manager, SSHKey
 from .. import configure, ui
 from ..command import Command
 from .. import MOCK

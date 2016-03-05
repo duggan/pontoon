@@ -13,7 +13,7 @@ except ImportError:
 from subprocess import call, Popen, PIPE, CalledProcessError
 from . import debug
 from .exceptions import ConfigureException
-from digitalocean import Manager, SSHKey
+from .lib import Manager, SSHKey
 from . import MOCK
 
 user_cfg = os.path.join(os.path.expanduser('~'), '.pontoon')

@@ -7,7 +7,7 @@ Options:
 """
 
 from docopt import docopt
-from digitalocean import Manager, Region
+from ..lib import Manager, Region
 from .. import configure, ui
 from ..command import Command
 from .. import MOCK
