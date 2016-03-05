@@ -4,6 +4,7 @@ environment:
 
     MOCK: "1"
     PIP_DOWNLOAD_CACHE : "C\\PIP_DOWNLOAD_CACHE"
+    PYTHON_EGG_CACHE : "C\\PYTHON_EGG_CACHE"
 
   matrix:
 
