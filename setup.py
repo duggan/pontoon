@@ -2,7 +2,6 @@
 
 from pontoon.meta import (__version__, __description__, __author__,
                           __author_email__, __url__)
-from glob import glob
 try:
     from setuptools import setup
 except ImportError:
@@ -15,8 +14,6 @@ packages = [
 
 requires = open("requirements/base.txt").read().split()
 
-scripts = glob('scripts/pontoon*')
-
 setup(
     name='pontoon',
     version=__version__,
@@ -28,7 +25,6 @@ setup(
     packages=packages,
     package_data={'': ['LICENSE']},
     package_dir={'pontoon': 'pontoon'},
-    # scripts=scripts,
     entry_points={
         "console_scripts": [
             "pontoon = pontoon.cmd.pontoon:main",
