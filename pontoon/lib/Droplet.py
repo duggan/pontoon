@@ -103,7 +103,7 @@ class Droplet(BaseAPI):
             mocked: bool - mocked
         """
         droplet = cls(token=api_token, id=droplet_id, mocked=mocked)
-        droplet.mock_data = "droplets/single.json" 
+        droplet.mock_data = "droplets/single.json"
         droplet.load()
         return droplet
 
@@ -128,7 +128,7 @@ class Droplet(BaseAPI):
         """
            Fetch data about droplet - use this instead of get_data()
         """
-        self.mock_data = "droplets/single.json" 
+        self.mock_data = "droplets/single.json"
         droplets = self.get_data("droplets/%s" % self.id)
         droplet = droplets['droplet']
 
@@ -195,7 +195,7 @@ class Droplet(BaseAPI):
 
             Returns dict or Action
         """
-        self.mock_data = "droplet_actions/shutdown.json" 
+        self.mock_data = "droplet_actions/shutdown.json"
         return self._perform_action({'type': 'shutdown'}, return_dict)
 
     def reboot(self, return_dict=True):
@@ -208,7 +208,7 @@ class Droplet(BaseAPI):
 
             Returns dict or Action
         """
-        self.mock_data = "droplet_actions/reboot.json" 
+        self.mock_data = "droplet_actions/reboot.json"
         return self._perform_action({'type': 'reboot'}, return_dict)
 
     def power_cycle(self, return_dict=True):
@@ -221,7 +221,7 @@ class Droplet(BaseAPI):
 
             Returns dict or Action
         """
-        self.mock_data = "droplet_actions/power_cycle.json" 
+        self.mock_data = "droplet_actions/power_cycle.json"
         return self._perform_action({'type': 'power_cycle'}, return_dict)
 
     def power_off(self, return_dict=True):
@@ -234,7 +234,7 @@ class Droplet(BaseAPI):
 
             Returns dict or Action
         """
-        self.mock_data = "droplet_actions/power_off.json" 
+        self.mock_data = "droplet_actions/power_off.json"
         return self._perform_action({'type': 'power_off'}, return_dict)
 
     def reset_root_password(self, return_dict=True):
@@ -247,7 +247,7 @@ class Droplet(BaseAPI):
 
             Returns dict or Action
         """
-        self.mock_data = "droplet_actions/password_reset.json" 
+        self.mock_data = "droplet_actions/password_reset.json"
         return self._perform_action({'type': 'password_reset'}, return_dict)
 
     def resize(self, new_size_slug, return_dict=True, disk=True):
@@ -264,9 +264,10 @@ class Droplet(BaseAPI):
 
         Returns dict or Action
         """
-        self.mock_data = "droplet_actions/resize.json" 
+        self.mock_data = "droplet_actions/resize.json"
         options = {"type": "resize", "size": new_size_slug}
-        if disk: options["disk"] = "true"
+        if disk:
+            options["disk"] = "true"
 
         return self._perform_action(options, return_dict)
 
@@ -290,7 +291,7 @@ class Droplet(BaseAPI):
             action.wait()
             self.load()
 
-        self.mock_data = "droplet_actions/snapshot.json" 
+        self.mock_data = "droplet_actions/snapshot.json"
         return self._perform_action(
             {"type": "snapshot", "name": snapshot_name},
             return_dict
@@ -308,7 +309,7 @@ class Droplet(BaseAPI):
 
         Returns dict or Action
         """
-        self.mock_data = "droplet_actions/restore.json" 
+        self.mock_data = "droplet_actions/restore.json"
         return self._perform_action(
             {"type": "restore", "image": image_id},
             return_dict
@@ -329,7 +330,7 @@ class Droplet(BaseAPI):
         if not image_id:
             image_id = self.image['id']
 
-        self.mock_data = "droplet_actions/rebuild.json" 
+        self.mock_data = "droplet_actions/rebuild.json"
         return self._perform_action(
             {"type": "rebuild", "image": image_id},
             return_dict
@@ -351,7 +352,7 @@ class Droplet(BaseAPI):
 
             Returns dict or Action
         """
-        self.mock_data = "droplet_actions/disable_backups.json" 
+        self.mock_data = "droplet_actions/disable_backups.json"
         return self._perform_action({'type': 'disable_backups'}, return_dict)
 
     def destroy(self):
@@ -375,7 +376,7 @@ class Droplet(BaseAPI):
 
         Returns dict or Action
         """
-        self.mock_data = "droplet_actions/rename.json" 
+        self.mock_data = "droplet_actions/rename.json"
         return self._perform_action(
             {'type': 'rename', 'name': name},
             return_dict
@@ -391,7 +392,7 @@ class Droplet(BaseAPI):
 
            Returns dict or Action
         """
-        self.mock_data = "droplet_actions/enable_private_networking.json" 
+        self.mock_data = "droplet_actions/enable_private_networking.json"
         return self._perform_action(
             {'type': 'enable_private_networking'},
             return_dict
@@ -407,7 +408,7 @@ class Droplet(BaseAPI):
 
             Returns dict or Action
         """
-        self.mock_data = "droplet_actions/enable_ipv6.json" 
+        self.mock_data = "droplet_actions/enable_ipv6.json"
         return self._perform_action({'type': 'enable_ipv6'}, return_dict)
 
     def change_kernel(self, kernel, return_dict=True):
@@ -425,7 +426,7 @@ class Droplet(BaseAPI):
         if type(kernel) != Kernel:
             raise BadKernelObject("Use Kernel object")
 
-        self.mock_data = "droplet_actions/change_kernel.json" 
+        self.mock_data = "droplet_actions/change_kernel.json"
         return self._perform_action(
             {'type': 'change_kernel', 'kernel': kernel.id},
             return_dict
@@ -474,7 +475,7 @@ class Droplet(BaseAPI):
             else:
                 raise BadSSHKeyFormat(
                     "Droplet.ssh_keys should be a list of IDs, public keys"
-                    + " or fingerprints."
+                    " or fingerprints."
                 )
 
         return ssh_keys_id
@@ -507,7 +508,7 @@ class Droplet(BaseAPI):
         if self.user_data:
             data["user_data"] = self.user_data
 
-        self.mock_data = "droplet_actions/create.json" 
+        self.mock_data = "droplet_actions/create.json"
         data = self.get_data("droplets", type=POST, params=data)
 
         if data:
@@ -528,7 +529,7 @@ class Droplet(BaseAPI):
             Returns a list of Action objects
             This actions can be used to check the droplet's status
         """
-        self.mock_data = "actions/multi.json" 
+        self.mock_data = "actions/multi.json"
         answer = self.get_data("droplets/%s/actions/" % self.id, type=GET)
 
         actions = []
@@ -573,7 +574,7 @@ class Droplet(BaseAPI):
         """
 
         kernels = list()
-        self.mock_data = "kernels/list.json" 
+        self.mock_data = "kernels/list.json"
         data = self.get_data("droplets/%s/kernels/" % self.id)
         while True:
             for jsond in data[u'kernels']:

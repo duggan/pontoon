@@ -69,8 +69,12 @@ class BaseAPI(object):
 
         # lookup table to find out the apropriate requests method,
         # headers and payload type (json or query parameters)
-        identity = lambda x: x
-        json_dumps = lambda x: json.dumps(x)
+        def identity(x):
+            return x
+
+        def json_dumps(x):
+            return json.dumps(x)
+
         lookup = {
             GET: (requests.get, {}, 'params', identity),
             POST: (requests.post, {'Content-type': 'application/json'}, 'data',
@@ -104,9 +108,10 @@ class BaseAPI(object):
 
         if self.mocked:
             # Use mock data for responses
-            self._log.debug("Operating in MOCK mode - returning data from %s" % self.mock_data)
+            self._log.debug("MOCK - returning data from %s" % self.mock_data)
             with responses.RequestsMock() as rsps:
-                mock_data = self.load_from_file(self.mock_data) if self.mock_data else None
+                mock_data = self.load_from_file(
+                    self.mock_data) if self.mock_data else None
                 rsps.add(getattr(responses, type), self.end_point + url,
                          body=mock_data,
                          status=self.mock_status,

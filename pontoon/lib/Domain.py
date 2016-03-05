@@ -100,11 +100,12 @@ class Domain(BaseAPI):
         """
         if params is None:
             params = {}
-        
+
         self.mock_data = "domains/records.json"
         # URL https://api.digitalocean.com/v2/domains/[NAME]/records/
         records = []
-        data = self.get_data("domains/%s/records/" % self.name, type=GET, params=params)
+        data = self.get_data("domains/%s/records/" % self.name, type=GET,
+                             params=params)
 
         for record_data in data['domain_records']:
 

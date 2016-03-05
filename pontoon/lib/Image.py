@@ -46,7 +46,7 @@ class Image(BaseAPI):
         """
             Transfer the image
         """
-        self.mock_data = "actions/ipv6_completed.json" 
+        self.mock_data = "actions/ipv6_completed.json"
         return self.get_data(
             "images/%s/actions/" % self.id,
             type=POST,
@@ -57,7 +57,7 @@ class Image(BaseAPI):
         """
             Rename an image
         """
-        self.mock_data = "actions/ipv6_completed.json" 
+        self.mock_data = "actions/ipv6_completed.json"
         return self.get_data(
             "images/%s" % self.id,
             type=PUT,

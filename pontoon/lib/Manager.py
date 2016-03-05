@@ -110,7 +110,8 @@ class Manager(BaseAPI):
         """
             Return a Droplet by its ID.
         """
-        return Droplet.get_object(api_token=self.token, droplet_id=droplet_id, mocked=self.mocked)
+        return Droplet.get_object(api_token=self.token, droplet_id=droplet_id,
+                                  mocked=self.mocked)
 
     def get_all_sizes(self):
         """
@@ -161,7 +162,8 @@ class Manager(BaseAPI):
         """
             Return a Image by its ID.
         """
-        return Image.get_object(api_token=self.token, image_id=image_id, mocked=self.mocked)
+        return Image.get_object(api_token=self.token, image_id=image_id,
+                                mocked=self.mocked)
 
     def get_my_images(self):
         """
@@ -197,7 +199,6 @@ class Manager(BaseAPI):
         images = self.get_images(type='distribution')
         return images
 
-
     def get_app_images(self):
         """
             This function returns a list of Image objectobjects representing
@@ -206,7 +207,6 @@ class Manager(BaseAPI):
         self.mock_data = "images/app.json"
         images = self.get_images(type='application')
         return images
-
 
     def get_all_domains(self):
         """
@@ -226,7 +226,8 @@ class Manager(BaseAPI):
         """
             Return a Domain by its domain_name
         """
-        return Domain.get_object(api_token=self.token, domain_name=domain_name, mocked=self.mocked)
+        return Domain.get_object(api_token=self.token, domain_name=domain_name,
+                                 mocked=self.mocked)
 
     def get_all_sshkeys(self):
         """
@@ -246,13 +247,15 @@ class Manager(BaseAPI):
         """
             Return a SSHKey object by its ID.
         """
-        return SSHKey.get_object(api_token=self.token, ssh_key_id=ssh_key_id, mocked=self.mocked)
+        return SSHKey.get_object(api_token=self.token, ssh_key_id=ssh_key_id,
+                                 mocked=self.mocked)
 
     def get_action(self, action_id):
         """
             Return an Action object by a specific ID.
         """
-        return Action.get_object(api_token=self.token, action_id=action_id, mocked=self.mocked)
+        return Action.get_object(api_token=self.token, action_id=action_id,
+                                 mocked=self.mocked)
 
     def get_all_actions(self):
         """
@@ -286,7 +289,8 @@ class Manager(BaseAPI):
         """
             Returns a of FloatingIP object by its IP address.
         """
-        return FloatingIP.get_object(api_token=self.token, ip=ip, mocked=self.mocked)
+        return FloatingIP.get_object(api_token=self.token, ip=ip,
+                                     mocked=self.mocked)
 
     def __str__(self):
         return "%s" % (self.token)

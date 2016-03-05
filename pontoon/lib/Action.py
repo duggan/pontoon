@@ -32,7 +32,7 @@ class Action(BaseAPI):
         return action
 
     def load_directly(self):
-        self.mock_data = "actions/ipv6_completed.json" 
+        self.mock_data = "actions/ipv6_completed.json"
         action = self.get_data("actions/%s" % self.id)
         if action:
             action = action[u'action']
@@ -41,7 +41,7 @@ class Action(BaseAPI):
                 setattr(self, attr, action[attr])
 
     def load(self):
-        self.mock_data = "actions/ipv6_completed.json" 
+        self.mock_data = "actions/ipv6_completed.json"
         action = self.get_data(
             "droplets/%s/actions/%s" % (
                 self.droplet_id,
