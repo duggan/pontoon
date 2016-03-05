@@ -40,7 +40,7 @@ User Guide
 ----------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    user/install
    user/library
@@ -50,7 +50,7 @@ API Documentation
 -----------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    api
 

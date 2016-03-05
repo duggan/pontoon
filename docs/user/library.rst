@@ -1,15 +1,16 @@
 Library Usage
 =============
 
-To use pontoon as a library, install from pip, and use like so:
+To use pontoon's bundled library, install from pip, and use like so:
 
 ::
 
-    >>> from pontoon import Pontoon
-    >>> pontoon = Pontoon('my-client-id', 'my-api-key')
-    >>> pontoon.droplet.list()
-    [<pontoon.pontoon.Struct instance at 0x106ecf950>]
+    >>> import pontoon.lib
+    >>> manager = pontoon.lib.Manager(token="secretspecialuniquesnowflake")
+    >>> droplets = manager.get_all_droplets()
+    >>> for droplet in my_droplets:
+    >>>    droplet.shutdown()
 
-The library component owes its genesis to
-`DOP <https://github.com/ahmontero/dop>`__, by Antonio Hinojo.
+The library is a fork of `python-digitalocean <https://github.com/koalalorenzo/python-digitalocean>`__, by Lorenzo Setale.
 
+Further documentation for the library can be found there!

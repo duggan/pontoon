@@ -71,3 +71,18 @@ or for more detail:
        backups_active:      False
        ip_address:          192.0.2.128
 
+Configuration file
+------------------
+
+Here's an example of the options set in the configuration file:
+
+::
+
+    api_token: foo-bar-baz 
+    auth_key_name: Macbook.local
+    image: ubuntu-15-10-x32
+    region: lon1
+    size: 512mb
+    ssh_private_key: ~/.ssh/id_rsa
+    ssh_public_key: ~/.ssh/id_rsa.pub
+    username: root
