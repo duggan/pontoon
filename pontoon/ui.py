@@ -111,8 +111,8 @@ def format_droplet_info(machine):
     # Fields we want to remove / replace
     redacted = ['token', 'end_point', 'image', 'region',
                 'size', 'mock_data', 'mock_status', 'mocked']
-    details = machine.__dict__
-    for k, v in details.items():
+    details = machine.__dict__.copy()
+    for k, v in machine.__dict__.items():
         if k.startswith('_') or k in redacted:
             del details[k]
 
@@ -130,10 +130,10 @@ def format_event(action):
     e['started_at'] = action.started_at
     e['completed_at'] = action.completed_at
 
-    details = action.__dict__
     redacted = ['token', 'end_point', 'region',
                 'mock_data', 'mock_status', 'mocked']
-    for k, v in details.items():
+    details = action.__dict__.copy()
+    for k, v in action.__dict__.items():
         if k.startswith('_') or k in redacted:
             del details[k]
 
@@ -149,10 +149,10 @@ def format_item(item):
     i['id'] = item.id
     i['name'] = item.name
 
-    details = item.__dict__
     redacted = ['token', 'end_point',
                 'mock_data', 'mock_status', 'mocked']
-    for k, v in details.items():
+    details = item.__dict__.copy()
+    for k, v in item.__dict__.items():
         if k.startswith('_') or k in redacted:
             del details[k]
 

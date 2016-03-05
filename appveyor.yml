@@ -4,6 +4,7 @@ environment:
 
     MOCK: "1"
     PIP_DOWNLOAD_CACHE : "C\\PIP_DOWNLOAD_CACHE"
+    PYTHON_EGG_CACHE : "C\\PYTHON_EGG_CACHE"
 
   matrix:
 
@@ -40,6 +41,16 @@ environment:
       PYTHON_VERSION: "3.4.x" # currently 3.4.3
       PYTHON_ARCH: "64"
       TOXENV: "py34,lib,coverage"
+
+    - PYTHON: "C:\\Python35"
+      PYTHON_VERSION: "3.5.x" # currently 3.4.3
+      PYTHON_ARCH: "32"
+      TOXENV: "py35,lib,coverage"
+
+    - PYTHON: "C:\\Python35-x64"
+      PYTHON_VERSION: "3.5.x" # currently 3.4.3
+      PYTHON_ARCH: "64"
+      TOXENV: "py35,lib,coverage"
 
     # Python versions not pre-installed
 
