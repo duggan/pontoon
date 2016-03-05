@@ -8,13 +8,13 @@ env:
   global:
     - MOCK=1
   matrix:
-  - TOXENV=py26,lib,coverage
+  - TOXENV=py26,lib,cli,coverage
   - TOXENV=py27,lib,cli,coverage,coveralls
-  - TOXENV=py33,lib,coverage
-  - TOXENV=py34,lib,coverage
-  - TOXENV=py35,lib,coverage
-  - TOXENV=pypy,lib,coverage
-  - TOXENV=pypy3,lib,coverage
+  - TOXENV=py33,lib,cli,coverage
+  - TOXENV=py34,lib,cli,coverage
+  - TOXENV=py35,lib,cli,coverage
+  - TOXENV=pypy,lib,cli,coverage
+  - TOXENV=pypy3,lib,cli,coverage
   - TOXENV=py26,install
   - TOXENV=py27,install
   - TOXENV=py33,install
