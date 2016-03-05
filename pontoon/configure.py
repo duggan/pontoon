@@ -93,6 +93,9 @@ def combined():
     for k, v in read_config().items():
         config[k] = v
 
+    if MOCK:
+        return {"api_token": "fake-token"}
+
     return config
 
 

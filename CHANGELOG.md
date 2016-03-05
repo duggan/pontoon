@@ -1,3 +1,14 @@
+## 0.2.2 (March 5, 2016)
+
+BUGFIXES:
+
+   * **Python 3.5 compatibility** [GH-42]
+
+FEATURES:
+
+   * **Pass commands to Droplet** Can pass shell commands to a Droplet, e.g,
+	 `pontoon droplet ssh example.com "ls /"`
+
 ## 0.2.1 (November 6, 2015)
 
 BUGFIXES:
