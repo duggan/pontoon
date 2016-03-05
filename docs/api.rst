@@ -8,29 +8,55 @@ Developer Interface
 This part of the documentation covers all the interfaces of Pontoon.
 
 
-Pontoon Class
+Library Module
 -------------
 
-The Pontoon interface is the main entry point for using the library
+pontoon.lib is the main entry point for using the library
 as a developer.
 
-.. autoclass:: pontoon.pontoon.Pontoon
+.. automodule:: pontoon.lib
+   :members:
+
+Manager Class
+-------------
+
+.. autoclass:: pontoon.lib.Manager
    :members:
    :private-members:
-   :undoc-members:
 
 Droplet Class
 -------------
 
-.. autoclass:: pontoon.droplet.Droplet
+.. autoclass:: pontoon.lib.Droplet
+   :members:
+   :private-members:
+
+Account Class
+-------------
+
+.. autoclass:: pontoon.lib.Account
+   :members:
+   :private-members:
+
+Action Class
+------------
+
+.. autoclass:: pontoon.lib.Action
+   :members:
+   :private-members:
+
+Domain Class
+------------
+
+.. autoclass:: pontoon.lib.Domain
    :members:
    :private-members:
    :undoc-members:
 
-Event Class
------------
+FloatingIP Class
+----------------
 
-.. autoclass:: pontoon.event.Event
+.. autoclass:: pontoon.lib.FloatingIP
    :members:
    :private-members:
    :undoc-members:
@@ -38,42 +64,44 @@ Event Class
 Image Class
 -----------
 
-.. autoclass:: pontoon.image.Image
+.. autoclass:: pontoon.lib.Image
    :members:
    :private-members:
-   :undoc-members:
+
+Kernel Class
+------------
+
+.. autoclass:: pontoon.lib.Kernel
+   :members:
+   :private-members:
+
+Record Class
+------------
+
+.. autoclass:: pontoon.lib.Record
+   :members:
+   :private-members:
 
 Region Class
 ------------
 
-.. autoclass:: pontoon.region.Region
+.. autoclass:: pontoon.lib.Region
    :members:
    :private-members:
-   :undoc-members:
+
+SSHKey Class
+------------
+
+.. autoclass:: pontoon.lib.SSHKey
+   :members:
+   :private-members:
 
 Size Class
 ----------
 
-.. autoclass:: pontoon.size.Size
+.. autoclass:: pontoon.lib.Size
    :members:
    :private-members:
-   :undoc-members:
-
-Snapshot Class
---------------
-
-.. autoclass:: pontoon.snapshot.Snapshot
-   :members:
-   :private-members:
-   :undoc-members:
-
-SSH Key Class
--------------
-
-.. autoclass:: pontoon.sshkey.SSHKey
-   :members:
-   :private-members:
-   :undoc-members:
 
 UI module
 ---------

@@ -12,8 +12,6 @@ Pontoon makes interacting with Digital Ocean on the command line smooth sailing.
 
 It is designed for human consumption, and aims to have good defaults.
 
-It also happens to be a library.
-
 ## Caveats
 
 Pontoon has one rule it imposes on top of Digital Ocean:
@@ -105,6 +103,12 @@ foobar
    backups_active:      False
    ip_address:          192.0.2.128
 ```
+
+## Library
+
+Pontoon bundles a modified fork of python-digitalocean, which can be imported
+and used as `pontoon.lib`. The main difference the fork introduces is a system
+for interacting with mock API responses from DigitalOcean for more thorough testing.
 
 ## Contributing
 
