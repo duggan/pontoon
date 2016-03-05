@@ -9,7 +9,8 @@ except ImportError:
 
 packages = [
     'pontoon',
-    'pontoon.cmd'
+    'pontoon.cmd',
+    'pontoon.lib'
 ]
 
 requires = open("requirements/base.txt").read().split()

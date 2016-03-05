@@ -9,7 +9,7 @@ env:
     - MOCK=1
   matrix:
   - TOXENV=py26,lib,coverage
-  - TOXENV=py27,lib,coverage,coveralls
+  - TOXENV=py27,lib,cli,coverage,coveralls
   - TOXENV=py33,lib,coverage
   - TOXENV=py34,lib,coverage
   - TOXENV=py35,lib,coverage
