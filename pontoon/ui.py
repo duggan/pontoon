@@ -8,6 +8,7 @@ try:
 except ImportError:
     pass
 
+import socket
 import yaml
 import textwrap
 from os.path import (isfile, expanduser,
@@ -79,6 +80,13 @@ def full_path(path):
 def filename_from_path(path):
     """Get a filename from a given path"""
     return splitext(basename(expanduser(path)))[0]
+
+
+def machine():
+    try:
+        return socket.gethostname()
+    except OSError:
+        return "pontoon"
 
 
 def mask(text, masker='*'):

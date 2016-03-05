@@ -24,8 +24,8 @@ class ConfigureCommand(Command):
     def interactive(args):
         config = {}
         default = {}
-        default['ssh_private_key'] = '~/.ssh/pontoon'
-        default['ssh_public_key'] = '~/.ssh/pontoon.pub'
+        default['ssh_private_key'] = '~/.ssh/id_rsa'
+        default['ssh_public_key'] = '~/.ssh/id_rsa.pub'
 
         ui.heading("Configure your Digital Ocean account with pontoon.")
         current = configure.combined()
@@ -51,10 +51,11 @@ class ConfigureCommand(Command):
         if ui.ask_yesno("Use an existing keypair?"):
             for key in ['private', 'public']:
                 key_name = 'ssh_%s_key' % key
-                auth_key = ui.ask("Path to SSH %s key" % key)
+                auth_key = ui.ask("Path to SSH %s key (default %s)" % (
+                                  key, default[key_name]))
                 if auth_key:
                     config[key_name] = auth_key
-                elif current[key_name]:
+                elif key_name in current and current[key_name]:
                     config[key_name] = current[key_name]
                 else:
                     config[key_name] = default[key_name]
@@ -64,15 +65,18 @@ class ConfigureCommand(Command):
                     config[key_name] = ui.ask("Path to SSH private key")
 
         else:
-            config['ssh_private_key'] = default['ssh_private_key']
-            config['ssh_public_key'] = default['ssh_public_key']
+            for key in ['private']:
+                key_name = 'ssh_%s_key' % key
+                auth_key = ui.ask("Path to SSH %s key (default %s)" % (
+                                  key, default[key_name]))
+                if auth_key:
+                    config[key_name] = auth_key
+                elif key_name in current and current[key_name]:
+                    config[key_name] = current[key_name]
+                else:
+                    config[key_name] = default[key_name]
 
             if ui.valid_path(
-                config['ssh_private_key']) and ui.valid_path(
-                    config['ssh_public_key']):
-                ui.message("Existing keypair found, using those.")
-
-            elif ui.valid_path(
                 config['ssh_private_key']) and not ui.valid_path(
                     config['ssh_public_key']):
                 ui.message("Regenerating public key...")
@@ -82,11 +86,11 @@ class ConfigureCommand(Command):
             else:
                 configure.rsa_keygen(config['ssh_private_key'])
 
-        config['auth_key_name'] = ui.filename_from_path(
-            config['ssh_private_key'])
+        config['auth_key_name'] = ui.machine()
         public_key = configure.read_key(config['ssh_public_key'])
 
-        ui.message("Registering public key to Digital Ocean...")
+        ui.message("Registering public key with name '%s'..." % (
+                   config['auth_key_name']))
         try:
             configure.register_key(config,
                                    config['auth_key_name'],
