@@ -12,7 +12,7 @@ Options:
 """
 
 from docopt import docopt
-from digitalocean import Manager, Image
+from ..lib import Manager, Image
 from .. import configure, ui
 from ..command import Command
 from .. import MOCK

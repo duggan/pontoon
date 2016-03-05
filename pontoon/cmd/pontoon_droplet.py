@@ -59,7 +59,7 @@ import re
 from subprocess import call
 from functools import reduce
 from docopt import docopt
-from digitalocean import Manager, Droplet, SSHKey
+from ..lib import Manager, Droplet, SSHKey
 from .. import configure, ui
 from ..command import Command
 from .. import MOCK

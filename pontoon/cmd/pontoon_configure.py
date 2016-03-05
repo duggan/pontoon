@@ -8,7 +8,7 @@ Options:
 
 import logging
 from docopt import docopt
-from digitalocean import Manager
+from ..lib import Manager
 from .. import configure, ui
 from ..command import Command
 from .. import MOCK

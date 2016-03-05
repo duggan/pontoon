@@ -14,7 +14,6 @@ packages = [
 ]
 
 requires = open("requirements/base.txt").read().split()
-dependency_links = open("requirements/links.txt").read().split()
 
 scripts = glob('scripts/pontoon*')
 
@@ -45,7 +44,6 @@ setup(
     },
     include_package_data=True,
     install_requires=requires,
-    dependency_links=dependency_links,
     license=open('LICENSE').read(),
     zip_safe=False,
     classifiers=(

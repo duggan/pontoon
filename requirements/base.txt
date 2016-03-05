@@ -1,3 +1,2 @@
-python-digitalocean
 PyYAML
 docopt
