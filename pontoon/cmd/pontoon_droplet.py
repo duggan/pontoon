@@ -2,7 +2,7 @@
 
 """Usage:
           pontoon droplet list [--detail]
-          pontoon droplet create <name> [--size=<size>] [--image=<image>]
+          pontoon droplet create <name> [--size=<size>] [--image=<image slug>]
                                         [--region=<region>] [--keys=<key>...]
                                         [--user-data=<userdata>]
                                         [--private-networking]
@@ -32,7 +32,8 @@ Options:
                            Access with dot notation:
                               e.g., --field=networks.v4.0.ip_address
     --size=<size>          Droplet RAM allocation. [default: {size}]
-    --image=<image>        Droplet image. [default: {image}]
+    --image=<image slug>   Droplet image slug. [default: {image}]
+                           List images with: pontoon image list
     --region=<region>      Droplet region. [default: {region}]
     --keys=<key>...        List of registered keys to add
                            to Droplet(s) [default: {keys}].
