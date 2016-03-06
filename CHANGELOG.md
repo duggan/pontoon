@@ -1,3 +1,19 @@
+## 0.2.3 (March 6, 2016)
+
+FEATURES:
+
+   * **Add `--user-data` field to `droplet create`.**
+   * **image slugs (which are the input to the `--image` flag on `droplet
+	 create`) are returned as part of the output from `image list`.**
+   * **Add `--yes` flag to `droplet resize` and `droplet snapshot`.**
+
+CHANGES:
+
+   * Better documentation at <https://pontoon.readthedocs.org>
+   * `~/.ssh/id_rsa` and `~/.ssh/id_rsa.pub` are now used as the default
+	 private and public keypair.
+   * Reinclude some tests which had been skipped due to problems
+
 ## 0.2.2 (March 5, 2016)
 
 BUGFIXES:
