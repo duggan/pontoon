@@ -2,15 +2,17 @@
 
 """Usage:
           pontoon droplet list [--detail]
-          pontoon droplet create <name> [--size=<size>] [--image=<image>]
+          pontoon droplet create <name> [--size=<size>] [--image=<image slug>]
                                         [--region=<region>] [--keys=<key>...]
+                                        [--user-data=<userdata>]
                                         [--private-networking]
                                         [--disable-virtio] [--no-wait]
           pontoon droplet ssh <name> [<command>]
                                      [--user=<user>] [--key=<path-to-key>]
           pontoon droplet rename <from> <to> [--no-wait]
-          pontoon droplet resize <name> <size> [--no-wait]
-          pontoon droplet snapshot <droplet-name> <snapshot-name> [--no-wait]
+          pontoon droplet resize <name> <size> [--yes] [--no-wait]
+          pontoon droplet snapshot <droplet-name> <snapshot-name>
+                                    [--yes] [--no-wait]
           pontoon droplet show <name> [--field=<field>]
           pontoon droplet status <name>
           pontoon droplet destroy <name>
@@ -31,10 +33,13 @@ Options:
                            Access with dot notation:
                               e.g., --field=networks.v4.0.ip_address
     --size=<size>          Droplet RAM allocation. [default: {size}]
-    --image=<image>        Droplet image. [default: {image}]
+    --image=<image slug>   Droplet image slug. [default: {image}]
+                           List images with: pontoon image list
     --region=<region>      Droplet region. [default: {region}]
     --keys=<key>...        List of registered keys to add
                            to Droplet(s) [default: {keys}].
+    --user-data=<userdata> String of user data to pass to Droplet.
+                           Include a file like: --user-data="$(cat file.yml)"
     --private-networking   Assign private address to Droplet (where available)
     --disable-virtio       Disable VirtIO. (not recommended)
     --user=<user>          Override configured username for SSH login.
@@ -163,6 +168,7 @@ class DropletCommand(Command):
                 image=self.args['--image'],
                 region=self.args['--region'],
                 ssh_keys=ssh_keys,
+                user_data=self.args['--user-data'],
                 private_networking=self.args['--private-networking'],
                 disable_virtio=self.args['--disable-virtio'])
         except Exception as e:
@@ -220,13 +226,18 @@ class DropletCommand(Command):
 
             # Check whether Droplet is powered off
             if droplet.status != 'off':
-                if ui.ask_yesno("Droplet must be shut down during "
-                                "this process, proceed?"):
+                if self.args['--yes']:
                     ui.message("Shutting down Droplet...")
                     event = droplet.shutdown()
                     self._wait(event, droplet, status="off")
                 else:
-                    return
+                    if ui.ask_yesno("Droplet must be shut down during "
+                                    "this process, proceed?"):
+                        ui.message("Shutting down Droplet...")
+                        event = droplet.shutdown()
+                        self._wait(event, droplet, status="off")
+                    else:
+                        return
 
             # Perform the resize
             ui.message("Resizing...")
@@ -234,10 +245,15 @@ class DropletCommand(Command):
             self._wait(event, droplet, status="resized")
 
             # Boot the Droplet on completion
-            if ui.ask_yesno("Boot Droplet?"):
+            if self.args['--yes']:
                 ui.message("Booting...")
                 event = droplet.power_on()
                 self._wait(event, droplet)
+            else:
+                if ui.ask_yesno("Boot Droplet?"):
+                    ui.message("Booting...")
+                    event = droplet.power_on()
+                    self._wait(event, droplet)
 
         except Exception as e:
             ui.message("Failed to resize: %s" % str(e))
@@ -251,23 +267,33 @@ class DropletCommand(Command):
 
             # Check whether Droplet is powered off
             if droplet.status != 'off':
-                if ui.ask_yesno("Droplet must be shut down during this process"
-                                ", proceed?"):
+                if self.args['--yes']:
                     ui.message("Shutting down Droplet...")
                     event = droplet.shutdown()
                     self._wait(event, droplet, status="shutdown")
                 else:
-                    return
+                    if ui.ask_yesno("Droplet must be shut down"
+                                    " during this process, proceed?"):
+                        ui.message("Shutting down Droplet...")
+                        event = droplet.shutdown()
+                        self._wait(event, droplet, status="shutdown")
+                    else:
+                        return
 
             ui.message("Beginning snapshot...")
             event = droplet.take_snapshot(self.args['<snapshot-name>'])
             self._wait(event, droplet)
 
             # Boot the Droplet on completion
-            if ui.ask_yesno("Boot Droplet?"):
+            if self.args['--yes']:
                 ui.message("Booting...")
                 event = droplet.power_on()
                 self._wait(event, droplet)
+            else:
+                if ui.ask_yesno("Boot Droplet?"):
+                    ui.message("Booting...")
+                    event = droplet.power_on()
+                    self._wait(event, droplet)
 
         except Exception as e:
             ui.message("Failed to snapshot: %s" % str(e))

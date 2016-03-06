@@ -46,14 +46,12 @@ export MOCK=1
 }
 
 @test "Resize a Droplet" {
-	skip "FIXME: broken in Tox"
-	run sh -c 'yes | pontoon droplet resize example.com 1gb'
+	run sh -c 'pontoon droplet resize example.com 1gb --yes'
 	[ "$status" = 0 ]
 }
 
 @test "Create a Droplet snapshot" {
-	skip "FIXME: broken in Tox"
-	run sh -c 'yes | pontoon droplet snapshot example.com example-snapshot-daily'
+	run sh -c 'pontoon droplet snapshot example.com example-snapshot-daily --yes'
 	[ "$status" = 0 ]
 }
 
