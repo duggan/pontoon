@@ -4,6 +4,7 @@
           pontoon droplet list [--detail]
           pontoon droplet create <name> [--size=<size>] [--image=<image>]
                                         [--region=<region>] [--keys=<key>...]
+                                        [--user-data=<userdata>]
                                         [--private-networking]
                                         [--disable-virtio] [--no-wait]
           pontoon droplet ssh <name> [<command>]
@@ -35,6 +36,8 @@ Options:
     --region=<region>      Droplet region. [default: {region}]
     --keys=<key>...        List of registered keys to add
                            to Droplet(s) [default: {keys}].
+    --user-data=<userdata> String of user data to pass to Droplet.
+                           Include a file like: --user-data="$(cat file.yml)"
     --private-networking   Assign private address to Droplet (where available)
     --disable-virtio       Disable VirtIO. (not recommended)
     --user=<user>          Override configured username for SSH login.
@@ -163,6 +166,7 @@ class DropletCommand(Command):
                 image=self.args['--image'],
                 region=self.args['--region'],
                 ssh_keys=ssh_keys,
+                user_data=self.args['--user-data'],
                 private_networking=self.args['--private-networking'],
                 disable_virtio=self.args['--disable-virtio'])
         except Exception as e:
