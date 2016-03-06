@@ -55,7 +55,7 @@ class ImageCommand(Command):
             if self.args['--with-ids']:
                 name = s.name[:27] + "..." if len(s.name) > 30 else s.name
                 ui.message(" - %-10s %-10s %-35s %s" % (
-                       str(s.id) + ':', s.distribution, name, s.slug))
+                           str(s.id) + ':', s.distribution, name, s.slug))
             else:
                 name = s.name[:37] + "..." if len(s.name) > 40 else s.name
                 ui.message(" - %-10s %-45s %s" % (
