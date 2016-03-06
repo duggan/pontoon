@@ -272,8 +272,8 @@ class DropletCommand(Command):
                     event = droplet.shutdown()
                     self._wait(event, droplet, status="shutdown")
                 else:
-                    if ui.ask_yesno("Droplet must be shut down during this process"
-                                    ", proceed?"):
+                    if ui.ask_yesno("Droplet must be shut down"
+                                    " during this process, proceed?"):
                         ui.message("Shutting down Droplet...")
                         event = droplet.shutdown()
                         self._wait(event, droplet, status="shutdown")
