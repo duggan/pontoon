@@ -10,8 +10,9 @@
           pontoon droplet ssh <name> [<command>]
                                      [--user=<user>] [--key=<path-to-key>]
           pontoon droplet rename <from> <to> [--no-wait]
-          pontoon droplet resize <name> <size> [--no-wait]
-          pontoon droplet snapshot <droplet-name> <snapshot-name> [--no-wait]
+          pontoon droplet resize <name> <size> [--yes] [--no-wait]
+          pontoon droplet snapshot <droplet-name> <snapshot-name>
+                                    [--yes] [--no-wait]
           pontoon droplet show <name> [--field=<field>]
           pontoon droplet status <name>
           pontoon droplet destroy <name>
@@ -225,13 +226,18 @@ class DropletCommand(Command):
 
             # Check whether Droplet is powered off
             if droplet.status != 'off':
-                if ui.ask_yesno("Droplet must be shut down during "
-                                "this process, proceed?"):
+                if self.args['--yes']:
                     ui.message("Shutting down Droplet...")
                     event = droplet.shutdown()
                     self._wait(event, droplet, status="off")
                 else:
-                    return
+                    if ui.ask_yesno("Droplet must be shut down during "
+                                    "this process, proceed?"):
+                        ui.message("Shutting down Droplet...")
+                        event = droplet.shutdown()
+                        self._wait(event, droplet, status="off")
+                    else:
+                        return
 
             # Perform the resize
             ui.message("Resizing...")
@@ -239,10 +245,15 @@ class DropletCommand(Command):
             self._wait(event, droplet, status="resized")
 
             # Boot the Droplet on completion
-            if ui.ask_yesno("Boot Droplet?"):
+            if self.args['--yes']:
                 ui.message("Booting...")
                 event = droplet.power_on()
                 self._wait(event, droplet)
+            else:
+                if ui.ask_yesno("Boot Droplet?"):
+                    ui.message("Booting...")
+                    event = droplet.power_on()
+                    self._wait(event, droplet)
 
         except Exception as e:
             ui.message("Failed to resize: %s" % str(e))
@@ -256,23 +267,33 @@ class DropletCommand(Command):
 
             # Check whether Droplet is powered off
             if droplet.status != 'off':
-                if ui.ask_yesno("Droplet must be shut down during this process"
-                                ", proceed?"):
+                if self.args['--yes']:
                     ui.message("Shutting down Droplet...")
                     event = droplet.shutdown()
                     self._wait(event, droplet, status="shutdown")
                 else:
-                    return
+                    if ui.ask_yesno("Droplet must be shut down during this process"
+                                    ", proceed?"):
+                        ui.message("Shutting down Droplet...")
+                        event = droplet.shutdown()
+                        self._wait(event, droplet, status="shutdown")
+                    else:
+                        return
 
             ui.message("Beginning snapshot...")
             event = droplet.take_snapshot(self.args['<snapshot-name>'])
             self._wait(event, droplet)
 
             # Boot the Droplet on completion
-            if ui.ask_yesno("Boot Droplet?"):
+            if self.args['--yes']:
                 ui.message("Booting...")
                 event = droplet.power_on()
                 self._wait(event, droplet)
+            else:
+                if ui.ask_yesno("Boot Droplet?"):
+                    ui.message("Booting...")
+                    event = droplet.power_on()
+                    self._wait(event, droplet)
 
         except Exception as e:
             ui.message("Failed to snapshot: %s" % str(e))
