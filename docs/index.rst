@@ -17,8 +17,6 @@ sailing.
 
 It is designed for human consumption, and aims to have good defaults.
 
-It also happens to be a library.
-
 Caveats
 -------
 
@@ -40,26 +38,19 @@ User Guide
 ----------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    user/install
-   user/library
-   user/cli
+   user/basic
+   user/reference
 
-API Documentation
------------------
+Developer / Contributor Guide
+-----------------------------
 
 .. toctree::
    :maxdepth: 2
 
-   api
-
-Contributor Guide
------------------
-
-.. toctree::
-   :maxdepth: 1
-
+   dev/api
    dev/testing
 
 
