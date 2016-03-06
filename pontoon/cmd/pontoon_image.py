@@ -44,18 +44,22 @@ class ImageCommand(Command):
         available = self.manager.get_all_images()
         ui.message("Available images:")
         if self.args['--with-ids']:
-            ui.message("   %-10s %-10s %s" % ("id", "distro", "name"))
-            ui.line(length=40)
+            ui.message("   %-10s %-10s %-45s %s" % (
+                       "id", "distro", "name", "slug"))
+            ui.line(length=80)
         else:
-            ui.message("   %-10s %s" % ("distro", "name"))
-            ui.line(length=40)
+            ui.message("   %-10s %-45s %s" % ("distro", "name", "slug"))
+            ui.line(length=80)
 
         for s in available:
             if self.args['--with-ids']:
-                ui.message(" - %-10s %-10s %s" % (
-                           str(s.id) + ':', s.distribution, s.name))
+                name = s.name[:27] + "..." if len(s.name) > 30 else s.name
+                ui.message(" - %-10s %-10s %-35s %s" % (
+                       str(s.id) + ':', s.distribution, name, s.slug))
             else:
-                ui.message(" - %-10s %s" % (s.distribution, s.name))
+                name = s.name[:37] + "..." if len(s.name) > 40 else s.name
+                ui.message(" - %-10s %-45s %s" % (
+                           s.distribution, name, s.slug))
         return 0
 
     def show(self):
