@@ -23,11 +23,11 @@ class RegionCommand(Command):
     def list(self):
         available = self.manager.get_all_regions()
         ui.message("Available regions:")
-        ui.message("   %-10s %s" % ("name", "slug"))
-        ui.line(length=40)
+        ui.message("   %-20s %s" % ("name", "slug"))
+        ui.line(length=30)
 
         for s in available:
-            ui.message(" - %-15s (%s)" % (s.name, s.slug))
+            ui.message(" - %-20s (%s)" % (s.name, s.slug))
         return 0
 
 
