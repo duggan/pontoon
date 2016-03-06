@@ -1,2 +1,3 @@
 include docs/README.rst LICENSE requirements/*
 include pontoon/lib/data/*/*
+include pontoon/lib/LICENSE.txt

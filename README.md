@@ -145,6 +145,8 @@ $ apt-get update
 $ apt-get install bats
 ```
 
+The main project is MIT licensed, and the bundled library inherits LGPLv3.
+
 ### Debugging
 
 Set the `DEBUG` environment variable (to anything) to enable debug output for pontoon.
