@@ -160,7 +160,7 @@ Droplets
 
 .. option:: pontoon droplet show <name> [options]
 
-   Resize a Droplet. Takes Droplet name as first paramter, size as second.
+   Show detailed information about a particular Droplet.
 
 .. option:: --field field
 
