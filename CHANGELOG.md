@@ -22,7 +22,7 @@ BUGFIXES:
 
 FEATURES:
 
-   * **Pass commands to Droplet** Can pass shell commands to a Droplet, e.g,
+   * **Pass commands to Droplet** Can pass shell commands to a Droplet, e.g.,
 	 `pontoon droplet ssh example.com "ls /"`
 
 ## 0.2.1 (November 6, 2015)
