@@ -209,7 +209,7 @@ Mocking
 Set the ``MOCK`` environment variable (to anything) to return mock
 request data instead of querying Digital Ocean.
 
-This is implemented soley for end-to-end testing of the CLI, but you may
+This is implemented solely for end-to-end testing of the CLI, but you may
 find it useful in some other scenarios.
 
 .. |Build Status on Linux| image:: https://travis-ci.org/duggan/pontoon.png?branch=master

@@ -340,7 +340,7 @@ Public base images made available by Digital Ocean.
 
 .. option:: pontoon image oses
 
-   Retrive a list of Operating Systems for which there are base images.
+   Retrieve a list of Operating Systems for which there are base images.
 
 |
 
@@ -442,7 +442,7 @@ Manage SSH keys in your account.
 
 .. option:: pontoon sshkey show <name>
 
-   Retrive a public key by name.
+   Retrieve a public key by name.
 
 |
 
