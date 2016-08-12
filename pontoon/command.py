@@ -24,9 +24,12 @@ class Command:
             command = override
 
         try:
-            return getattr(self, command)()
-        except (KeyboardInterrupt, EOFError):
-            return 0
+            method = getattr(self, command)
         except KeyError:
             ui.message("No command '%s'" % command)
+            return 1
+        try:
+            return method()
+        except (KeyboardInterrupt, EOFError):
+            return 0
         return 1
