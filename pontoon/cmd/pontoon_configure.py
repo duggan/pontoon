@@ -65,7 +65,7 @@ class ConfigureCommand(Command):
                     config[key_name] = ui.ask("Path to SSH private key")
 
         else:
-            for key in ['private']:
+            for key in ['private', 'public']:
                 key_name = 'ssh_%s_key' % key
                 auth_key = ui.ask("Path to SSH %s key (default %s)" % (
                                   key, default[key_name]))
