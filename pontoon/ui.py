@@ -25,7 +25,7 @@ except ImportError:
 # Python 2/3 compatibility
 try:
     user_input = raw_input
-except:
+except NameError:
     user_input = input
 
 
