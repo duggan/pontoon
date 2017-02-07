@@ -13,13 +13,13 @@ env:
   - TOXENV=py34,lib,cli,coverage
   - TOXENV=py35,lib,cli,coverage
   - TOXENV=pypy,lib,cli,coverage
-  - TOXENV=pypy3,lib,cli,coverage
+# - TOXENV=pypy3,lib,cli,coverage
   - TOXENV=py27,install
   - TOXENV=py33,install
   - TOXENV=py34,install
   - TOXENV=py35,install
   - TOXENV=pypy,install
-  - TOXENV=pypy3,install
+# - TOXENV=pypy3,install
 
 install:
   - pip install tox
