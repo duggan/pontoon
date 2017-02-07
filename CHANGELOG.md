@@ -1,3 +1,13 @@
+## 0.2.4 (February 7, 2017)
+
+BUGFIXES:
+
+    * For image with no slug, omit the slug field completely,
+      instead of printing literally None [GH-56]
+    * Don't require configured SSH key [GH-55]
+    * Include public key path during first configuration [GH-54]
+    * Fix typos in documentation [GH-50]
+
 ## 0.2.3 (March 6, 2016)
 
 FEATURES:
