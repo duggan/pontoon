@@ -2,6 +2,14 @@
 
 A Python CLI (and library) for [Digital Ocean](https://digitalocean.com).
 
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+## Note: This Project is No Longer Maintained
+
+Code and any binaries will remain available.
+
+*[Consider using the official Digital Ocean CLI tool instead.](https://www.digitalocean.com/community/tutorials/how-to-use-doctl-the-official-digitalocean-command-line-client)*
+
 | Linux CI | Windows CI | Code Coverage | Docs |
 |:--------:|:----------:|:-------------:|:----:|
 | [![Build Status on Linux](https://travis-ci.org/duggan/pontoon.png?branch=master)](https://travis-ci.org/duggan/pontoon) | [![Build status on Windows](https://ci.appveyor.com/api/projects/status/rljdp3isvaj2pl3q?svg=true)](https://ci.appveyor.com/project/duggan/pontoon) | [![Coverage Status](https://coveralls.io/repos/duggan/pontoon/badge.png?branch=master)](https://coveralls.io/r/duggan/pontoon?branch=master) | [![Documentation Status](https://readthedocs.org/projects/pontoon/badge/?version=latest)](http://pontoon.readthedocs.org/en/latest/?badge=latest)
